@@ -1,0 +1,6 @@
+numpy==1.26.4
+matplotlib==3.8.1
+scipy==1.13.0
+scikit-guess==0.0.1a0
+pandas==2.2.1
+tqdm==4.64.0
