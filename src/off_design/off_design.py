@@ -125,7 +125,7 @@ def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100
 
 
 def get_f_mac(mac, atm) :
-    f_m = 1 + (atm.gamma-1)/2*mac**2
+    f_m = 1 + (atm.gamma - 1)/2 * mac**2
     return f_m
 
 def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
@@ -152,8 +152,8 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     beta_2 = beta_2
     delta_aoa = np.abs(aoa - blade_cascade.aoa_design_rotor)
 
-    T_tot_rel_1 = stage_off_design.T_stat + (stage_off_design.wu**2 + stage_off_design.vm**2)/(2*atm.Cp) 
-    p_tot_rel_1 = stage_off_design.p_tot  * (T_tot_rel_1/stage_off_design.T_tot)**(atm.gamma/(atm.gamma-1))
+    T_tot_rel_1 = stage_off_design.T_stat + (stage_off_design.wu**2 + stage_off_design.vm**2)/(2 * atm.Cp) 
+    p_tot_rel_1 = stage_off_design.p_tot  * (T_tot_rel_1/stage_off_design.T_tot)**(atm.gamma/(atm.gamma - 1))
 
     alph_naca = 0.0117
 
@@ -181,24 +181,24 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     vm2 = w2 * np.cos(beta_2)
 
     vu2     = wu2 + stage_off_design.u
-    alpha_2 = np.arctan(vm2/vu2)
+    alpha_2 = np.arctan(vu2/vm2)
 
     rho2 = p_stat_2 / (atm.R * T_stat_2)
 
-    T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
-    p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma-1))
+    T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2 * atm.Cp)
+    p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
     stage_rotor = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, wu2, vu2,beta_2, alpha_2, vm2, compressor)
 
     return stage_rotor
 
 def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
-
     sensitivity = get_sensitivity_solidity_1_5(stage_off_design.alpha)
     aoa         = stage_off_design.alpha - blade_cascade.deflection_design_stator
     delta_aoa   = (aoa - blade_cascade.aoa_design_stator)
     alpha_2     = stage_off_design.alpha - blade_cascade.deflection_design_stator - sensitivity * delta_aoa
-    # print("##### OFF DESIGN STATOR #####")
+    # print("alpha_2", np.rad2deg(alpha_2))
+    # print("alpha 1", np.rad2deg(stage_off_design.alpha))
     delta_aoa = np.abs(aoa - blade_cascade.aoa_design_stator)
     alpha_naca = 0.0117
     D_eq = np.cos(alpha_2) / np.cos(stage_off_design.alpha) * (1.12 + alpha_naca * (delta_aoa)**1.43 
@@ -225,13 +225,15 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     vu2 = v2 * np.sin(alpha_2)
     vm2 = v2 * np.cos(alpha_2)
 
+    print("vu2", vu2)
+    print("vm2", vm2)
+
     wu2 = vu2 - stage_off_design.u
 
     beta_2 = np.arctan(wu2/vm2)
-    print("beta 2 : ", np.rad2deg(beta_2))
 
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
-    p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma-1))
+    p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
     stage_stator = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, wu2, vu2, beta_2, alpha_2, vm2, compressor)
 

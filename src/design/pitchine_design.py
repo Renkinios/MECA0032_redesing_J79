@@ -75,7 +75,7 @@ def get_rotor_outlet(stage_inlet, triangle_compressor, compressor, atm) :
 
     moment_thickness = di.get_interpolation_diffusion(DF)
 
-    loss_coeff       = 2 * moment_thickness * (compressor.solidity/(np.cos(triangle_compressor.beta_2)))  * ((np.cos(triangle_compressor.beta_1) /np.cos(triangle_compressor.beta_2))**2)
+    loss_coeff       = 2 * moment_thickness * (compressor.solidity/(np.cos(triangle_compressor.beta_2)))  * (np.cos(triangle_compressor.beta_1) /np.cos(triangle_compressor.beta_2))**2
     delta_p_tot      = 1/2 * loss_coeff * stage_inlet.rho * w1**2
 
     T_tot_rel_2  = T_tot_rel_1 # u same 
@@ -117,7 +117,7 @@ def get_stator_outlet(stage_inlet, triangle_compressor, compressor, atm) :
         raise ValueError(f'The diffusoin factor is not respected in the stator {DF} > 0.6')
     moment_thickness = di.get_interpolation_diffusion(DF)
 
-    loss_coeff       = 2 * moment_thickness * (compressor.solidity /(np.cos(alpha_2))) * ((np.cos(alpha_1) /np.cos(alpha_2))**2)
+    loss_coeff       = 2 * moment_thickness * (compressor.solidity /(np.cos(alpha_2))) * (np.cos(alpha_1) /np.cos(alpha_2))**2
     delta_p_tot      = 1/2 * loss_coeff * stage_inlet.rho * v1**2
 
 
@@ -156,7 +156,7 @@ def get_OGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
         raise ValueError(f'The diffusoin factor is not respected for the OGV {DF} > 0.6')
     
     moment_thickness = di.get_interpolation_diffusion(DF)
-    loss_coeff       = 2 * moment_thickness * (compressor.solidity /(np.cos(alpha_2)))  * ((np.cos(alpha_1) /np.cos(alpha_2))**2)
+    loss_coeff       = 2 * moment_thickness * (compressor.solidity /(np.cos(alpha_2)))  * (np.cos(alpha_1) /np.cos(alpha_2))**2
     delta_p_tot      =  1/2 * loss_coeff * stage_inlet.rho * v1**2
 
     T_tot_2  = stage_inlet.T_tot
