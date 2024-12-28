@@ -1,0 +1,262 @@
+############## Rotor adimensionalisation ##############
+############## Off Design ##############
+vm 160.93863446716267
+############ Stage 2 Summary ############
+  Static Temperature (T_stat): 289.73 K
+  Static Pressure (p_stat): 102987.30 Pa
+  Total Temperature (T_tot): 313.40 K
+  Total Pressure (p_tot): 135567.46 Pa
+  Axial Velocity (v_u): 148.69 m/s
+  Tangential Velocity (w_u): -70.33 m/s
+  Meriodonial velocity (vm): 159.57 m/s
+  Density (rho): 1.24 kg/m^3
+  Tip Radius (r_tip): 0.3998 m
+  Hub Radius (r_hub): 0.1891 m
+  Area: 0.3897 m^2
+  Beta: -23.78°
+  Alpha: 47.02°
+############ Stage 3 Summary ############
+  Static Temperature (T_stat): 300.41 K
+  Static Pressure (p_stat): 115625.67 Pa
+  Total Temperature (T_tot): 313.40 K
+  Total Pressure (p_tot): 134093.07 Pa
+  Axial Velocity (v_u): 27.16 m/s
+  Tangential Velocity (w_u): -191.86 m/s
+  Meriodonial velocity (vm): 159.28 m/s
+  Density (rho): 1.34 kg/m^3
+  Tip Radius (r_tip): 0.3919 m
+  Hub Radius (r_hub): 0.1970 m
+  Area: 0.3606 m^2
+  Beta: -50.30°
+  Alpha: 9.68°
+############ Stage 4 Summary ############
+  Static Temperature (T_stat): 316.81 K
+  Static Pressure (p_stat): 138892.52 Pa
+  Total Temperature (T_tot): 340.19 K
+  Total Pressure (p_tot): 178198.86 Pa
+  Axial Velocity (v_u): 150.07 m/s
+  Tangential Velocity (w_u): -68.94 m/s
+  Meriodonial velocity (vm): 156.41 m/s
+  Density (rho): 1.53 kg/m^3
+  Tip Radius (r_tip): 0.3816 m
+  Hub Radius (r_hub): 0.2073 m
+  Area: 0.3224 m^2
+  Beta: -23.79°
+  Alpha: 46.18°
+############ Stage 5 Summary ############
+  Static Temperature (T_stat): 327.73 K
+  Static Pressure (p_stat): 154938.74 Pa
+  Total Temperature (T_tot): 340.19 K
+  Total Pressure (p_tot): 176554.53 Pa
+  Axial Velocity (v_u): 26.59 m/s
+  Tangential Velocity (w_u): -192.42 m/s
+  Meriodonial velocity (vm): 155.99 m/s
+  Density (rho): 1.65 kg/m^3
+  Tip Radius (r_tip): 0.3755 m
+  Hub Radius (r_hub): 0.2134 m
+  Area: 0.2998 m^2
+  Beta: -50.97°
+  Alpha: 9.67°
+############ Stage 6 Summary ############
+  Static Temperature (T_stat): 344.26 K
+  Static Pressure (p_stat): 183593.18 Pa
+  Total Temperature (T_tot): 367.38 K
+  Total Pressure (p_tot): 230500.60 Pa
+  Axial Velocity (v_u): 151.35 m/s
+  Tangential Velocity (w_u): -67.67 m/s
+  Meriodonial velocity (vm): 153.51 m/s
+  Density (rho): 1.86 kg/m^3
+  Tip Radius (r_tip): 0.3674 m
+  Hub Radius (r_hub): 0.2215 m
+  Area: 0.2700 m^2
+  Beta: -23.79°
+  Alpha: 45.41°
+############ Stage 7 Summary ############
+  Static Temperature (T_stat): 355.49 K
+  Static Pressure (p_stat): 203778.43 Pa
+  Total Temperature (T_tot): 367.38 K
+  Total Pressure (p_tot): 228654.88 Pa
+  Axial Velocity (v_u): 25.97 m/s
+  Tangential Velocity (w_u): -193.04 m/s
+  Meriodonial velocity (vm): 152.41 m/s
+  Density (rho): 2.00 kg/m^3
+  Tip Radius (r_tip): 0.3628 m
+  Hub Radius (r_hub): 0.2261 m
+  Area: 0.2530 m^2
+  Beta: -51.71°
+  Alpha: 9.67°
+vm 177.03249791387896
+
+
+
+
+
+############ Stage 2 Summary ############
+  Static Temperature (T_stat): 285.60 K
+  Static Pressure (p_stat): 97934.54 Pa
+  Total Temperature (T_tot): 314.74 K
+  Total Pressure (p_tot): 137597.01 Pa
+  Axial Velocity (v_u): 159.54 m/s
+  Tangential Velocity (w_u): -59.48 m/s
+  Meriodonial velocity (vm): 181.96 m/s
+  Density (rho): 1.19 kg/m^3
+  Tip Radius (r_tip): 0.3998 m
+  Hub Radius (r_hub): 0.1891 m
+  Area: 0.3897 m^2
+  Beta: -18.10°
+  Alpha: 48.76°
+############ Stage 3 Summary ############
+  Static Temperature (T_stat): 298.24 K
+  Static Pressure (p_stat): 112119.20 Pa
+  Total Temperature (T_tot): 314.74 K
+  Total Pressure (p_tot): 135377.49 Pa
+  Axial Velocity (v_u): 30.63 m/s
+  Tangential Velocity (w_u): -188.39 m/s
+  Meriodonial velocity (vm): 179.52 m/s
+  Density (rho): 1.31 kg/m^3
+  Tip Radius (r_tip): 0.3918 m
+  Hub Radius (r_hub): 0.1971 m
+  Area: 0.3603 m^2
+  Beta: -46.38°
+  Alpha: 9.68°
+############ Stage 4 Summary ############
+  Static Temperature (T_stat): 313.83 K
+  Static Pressure (p_stat): 133625.75 Pa
+  Total Temperature (T_tot): 340.50 K
+  Total Pressure (p_tot): 177756.68 Pa
+  Axial Velocity (v_u): 148.78 m/s
+  Tangential Velocity (w_u): -70.23 m/s
+  Meriodonial velocity (vm): 177.32 m/s
+  Density (rho): 1.48 kg/m^3
+  Tip Radius (r_tip): 0.3815 m
+  Hub Radius (r_hub): 0.2074 m
+  Area: 0.3221 m^2
+  Beta: -21.61°
+  Alpha: 50.00°
+############ Stage 5 Summary ############
+  Static Temperature (T_stat): 324.10 K
+  Static Pressure (p_stat): 146886.69 Pa
+  Total Temperature (T_tot): 340.50 K
+  Total Pressure (p_tot): 174588.62 Pa
+  Axial Velocity (v_u): 30.54 m/s
+  Tangential Velocity (w_u): -188.47 m/s
+  Meriodonial velocity (vm): 178.96 m/s
+  Density (rho): 1.58 kg/m^3
+  Tip Radius (r_tip): 0.3755 m
+  Hub Radius (r_hub): 0.2134 m
+  Area: 0.2998 m^2
+  Beta: -46.48°
+  Alpha: 9.69°
+############ Stage 6 Summary ############
+  Static Temperature (T_stat): 339.62 K
+  Static Pressure (p_stat): 172546.85 Pa
+  Total Temperature (T_tot): 366.13 K
+  Total Pressure (p_tot): 224475.32 Pa
+  Axial Velocity (v_u): 148.18 m/s
+  Tangential Velocity (w_u): -70.84 m/s
+  Meriodonial velocity (vm): 177.00 m/s
+  Density (rho): 1.77 kg/m^3
+  Tip Radius (r_tip): 0.3675 m
+  Hub Radius (r_hub): 0.2214 m
+  Area: 0.2704 m^2
+  Beta: -21.81°
+  Alpha: 50.06°
+############ Stage 7 Summary ############
+  Static Temperature (T_stat): 349.75 K
+  Static Pressure (p_stat): 187989.75 Pa
+  Total Temperature (T_tot): 366.13 K
+  Total Pressure (p_tot): 220664.02 Pa
+  Axial Velocity (v_u): 30.53 m/s
+  Tangential Velocity (w_u): -188.48 m/s
+  Meriodonial velocity (vm): 178.88 m/s
+  Density (rho): 1.87 kg/m^3
+  Tip Radius (r_tip): 0.3628 m
+  Hub Radius (r_hub): 0.2261 m
+  Area: 0.2529 m^2
+  Beta: -46.50°
+  Alpha: 9.69°
+vm 144.8447710204464
+############ Stage 2 Summary ############
+  Static Temperature (T_stat): 294.46 K
+  Static Pressure (p_stat): 109024.09 Pa
+  Total Temperature (T_tot): 316.37 K
+  Total Pressure (p_tot): 140165.72 Pa
+  Axial Velocity (v_u): 158.22 m/s
+  Tangential Velocity (w_u): -60.79 m/s
+  Meriodonial velocity (vm): 137.88 m/s
+  Density (rho): 1.29 kg/m^3
+  Tip Radius (r_tip): 0.3998 m
+  Hub Radius (r_hub): 0.1891 m
+  Area: 0.3897 m^2
+  Beta: -23.79°
+  Alpha: 41.07°
+############ Stage 3 Summary ############
+  Static Temperature (T_stat): 307.03 K
+  Static Pressure (p_stat): 125388.70 Pa
+  Total Temperature (T_tot): 316.37 K
+  Total Pressure (p_tot): 139254.22 Pa
+  Axial Velocity (v_u): 22.99 m/s
+  Tangential Velocity (w_u): -196.03 m/s
+  Meriodonial velocity (vm): 135.06 m/s
+  Density (rho): 1.42 kg/m^3
+  Tip Radius (r_tip): 0.3919 m
+  Hub Radius (r_hub): 0.1970 m
+  Area: 0.3607 m^2
+  Beta: -55.43°
+  Alpha: 9.66°
+############ Stage 4 Summary ############
+  Static Temperature (T_stat): 324.93 K
+  Static Pressure (p_stat): 152550.39 Pa
+  Total Temperature (T_tot): 346.45 K
+  Total Pressure (p_tot): 190921.13 Pa
+  Axial Velocity (v_u): 160.97 m/s
+  Tangential Velocity (w_u): -58.04 m/s
+  Meriodonial velocity (vm): 131.60 m/s
+  Density (rho): 1.64 kg/m^3
+  Tip Radius (r_tip): 0.3815 m
+  Hub Radius (r_hub): 0.2074 m
+  Area: 0.3220 m^2
+  Beta: -23.80°
+  Alpha: 39.27°
+############ Stage 5 Summary ############
+  Static Temperature (T_stat): 337.98 K
+  Static Pressure (p_stat): 174139.84 Pa
+  Total Temperature (T_tot): 346.45 K
+  Total Pressure (p_tot): 189900.19 Pa
+  Axial Velocity (v_u): 21.88 m/s
+  Tangential Velocity (w_u): -197.14 m/s
+  Meriodonial velocity (vm): 128.63 m/s
+  Density (rho): 1.79 kg/m^3
+  Tip Radius (r_tip): 0.3756 m
+  Hub Radius (r_hub): 0.2133 m
+  Area: 0.3002 m^2
+  Beta: -56.88°
+  Alpha: 9.65°
+############ Stage 6 Summary ############
+  Static Temperature (T_stat): 356.16 K
+  Static Pressure (p_stat): 208773.30 Pa
+  Total Temperature (T_tot): 377.33 K
+  Total Pressure (p_tot): 255537.31 Pa
+  Axial Velocity (v_u): 163.59 m/s
+  Tangential Velocity (w_u): -55.43 m/s
+  Meriodonial velocity (vm): 125.66 m/s
+  Density (rho): 2.04 kg/m^3
+  Tip Radius (r_tip): 0.3674 m
+  Hub Radius (r_hub): 0.2214 m
+  Area: 0.2701 m^2
+  Beta: -23.80°
+  Alpha: 37.53°
+############ Stage 7 Summary ############
+  Static Temperature (T_stat): 369.62 K
+  Static Pressure (p_stat): 236658.48 Pa
+  Total Temperature (T_tot): 377.33 K
+  Total Pressure (p_tot): 254397.22 Pa
+  Axial Velocity (v_u): 20.87 m/s
+  Tangential Velocity (w_u): -198.15 m/s
+  Meriodonial velocity (vm): 122.74 m/s
+  Density (rho): 2.23 kg/m^3
+  Tip Radius (r_tip): 0.3629 m
+  Hub Radius (r_hub): 0.2260 m
+  Area: 0.2532 m^2
+  Beta: -58.23°
+  Alpha: 9.65°
