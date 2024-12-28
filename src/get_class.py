@@ -224,13 +224,12 @@ class blade_cascade :
         self.stragger_rotor    = stragger_rotor
         self.stragger_OGV      = stragger_OGV
         self.aoa_design_stator = triangle.alpha_2 - stragger_stator
-        self.aoa_design_rotor  = triangle.beta_1 - stragger_rotor
+        self.aoa_design_rotor  = -triangle.beta_1 - stragger_rotor
         self.aoa_design_OGV    = triangle.alpha_2 - stragger_OGV
 
-        self.deflection_design_stator = triangle.alpha_1 - triangle.alpha_2 #inverse due to the fact that the sttor is at the second position
-        self.deflection_design_rotor  = triangle.beta_2 - triangle.beta_1
-        self.deflection_design_OGV    = triangle.alpha_1
-
+        self.deflection_design_stator = np.abs(triangle.alpha_1 - triangle.alpha_2)#inverse due to the fact that the sttor is at the second position
+        self.deflection_design_rotor  = np.abs(triangle.beta_2 - triangle.beta_1)
+        self.deflection_design_OGV    = np.abs(triangle.alpha_1)
         self.beta1_design      = triangle.beta_1
         self.alpha1_design     = triangle.alpha_1
         self.beta2_design      = triangle.beta_2
