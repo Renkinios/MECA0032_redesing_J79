@@ -7,6 +7,13 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     p_tot_1 = atm.Pa 
     rho_1 = atm.Pa/(atm.R * atm.Ta)
     vm =  compressor.m_dot / (compressor.A * atm.rho)
+    # print("######### Blade cascade ########")
+
+    # print("alpha1_design", np.rad2deg(blade_cascade.alpha1_design))
+    # print("alpha2_design", np.rad2deg(blade_cascade.alpha2_design))
+    # print("beta2_design", np.rad2deg(blade_cascade.beta2_design))
+    # print("beta1_design", np.rad2deg(blade_cascade.beta1_design))
+    
     print("vm", vm)
     T_1 = T_tot_1 - (vm**2)/(2*atm.Cp)
     p_1 = p_tot_1*(T_1/T_tot_1)**(atm.gamma/(atm.gamma-1))
@@ -14,6 +21,8 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1, 0, 0, 0, 0, vm, compressor)
     matrix_stage_OFF_design[0] = stage_0
     stage_IGV = get_IGV_off_design(compressor, atm, stage_0 ,stage_design, blade_cascade)
+    # print("Stage IGV vm : ", stage_IGV.vm)
+    
     matrix_stage_OFF_design[1] = stage_IGV
     for i in range(compressor.number_stage-1) :
         rotor_stage = get_rotor_off(compressor, atm, matrix_stage_OFF_design[i * 2 + 1], stage_design[2*i + 2].area, blade_cascade)
@@ -21,6 +30,8 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
         # print(rotor_stage)
         stator_stage = get_stator_off(compressor, atm, matrix_stage_OFF_design[2*i + 2], stage_design[2*i + 3].area, blade_cascade)
         matrix_stage_OFF_design[(i*2) + 3] = stator_stage
+        # print("Rotor vm : ", rotor_stage.vm)
+        # print("Stator vm : ", stator_stage.vm)
         # print(stator_stage)
         # if i ==2 :
         
@@ -44,7 +55,8 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     #     f"p_tot2: {p_tot2}\n"
     #     f"Alpha1 Design (degrees): {np.degrees(blade_cascade.alpha1_design)}\n"
     #     f"Compressor Mass Flow (m_dot): {compressor.m_dot}")
-    mac, c_rho = get_mac(stage_design[1].area, T_tot2, p_tot2, blade_cascade.alpha1_design, atm, compressor.m_dot)
+    mac = get_mac(stage_design[1].area, T_tot2, p_tot2, blade_cascade.alpha1_design, atm, compressor.m_dot)
+
     T_stat = T_tot2 / get_f_mac(mac, atm)
     p_stat = p_tot2 *(T_stat/T_tot2)**(atm.gamma/(atm.gamma-1))
     speed_sound = np.sqrt(atm.gamma * atm.R * T_stat)
@@ -61,18 +73,54 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, wu, vu, beta_2, alpha_2, vm, compressor)
     return stage_IGV
 
-def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
+def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
+    """
+    Calculate the Mach number (MAC) using a convergence method.
 
-    mac = np.arange(0.1,1.2,0.001)
+    Parameters:
+    - area_design: section area
+    - T_tot: total temperature
+    - p_tot: total pressure
+    - angle: attack angle in radians
+    - atm: object containing atmospheric properties (R, gamma)
+    - m_dot: mass flow rate
+    - tol: tolerance for convergence (default: 1e-6)
+    - max_iter: maximum number of iterations (default: 100)
 
-    c_rho      = m_dot / (area_design * np.cos(angle))
-    left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-    f_m        = get_f_mac(mac, atm)
-    right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
-    mac = mac[np.argmin(abs(left_side - right_side))]
-    print("Mac", mac)
-    print('error', np.min(abs(left_side - right_side)))
-    return mac, c_rho
+    Returns:
+    - mac: converged Mach number
+    """
+    
+    def residual(mac):
+        c_rho = m_dot / (area_design * np.cos(angle))
+        left_side = c_rho * np.sqrt(atm.R * T_tot) / p_tot
+        f_m = get_f_mac(mac, atm)
+        right_side = f_m**(- (atm.gamma + 1) / (2 * (atm.gamma - 1))) * np.sqrt(atm.gamma) * mac
+        return left_side - right_side
+
+    def derivative(mac):
+        # Numerical approximation of the residual function derivative
+        delta = 1e-8
+        return (residual(mac + delta) - residual(mac - delta)) / (2 * delta)
+
+    # Initialization
+    mac = 0.5  # Initial guess
+    for i in range(max_iter):
+        res = residual(mac)
+        deriv = derivative(mac)
+        
+        if abs(res) < tol:  # Check for convergence
+            return mac
+        
+        if deriv == 0:
+            raise ValueError("Zero derivative encountered, Newton's method fails.")
+        
+        mac -= res / deriv  # Update MAC
+        
+        if mac < 0.1 or mac > 0.75:
+            raise ValueError("Mach number out of bounds. Check input parameters.")
+    
+    raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
 
 
 
@@ -114,7 +162,7 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
                                                               * (np.tan(stage_off_design.beta) - np.tan(beta_2)))
     thinkness = get_momentum_thickness_off(Deq)
 
-    coef_loss = 2 * thinkness * (compressor.solidity / np.cos(stage_off_design.beta)) *(np.cos(stage_off_design.beta) / np.cos(beta_2))**2
+    coef_loss = 2 * thinkness * (compressor.solidity / np.cos(beta_2)) *(np.cos(stage_off_design.beta) / np.cos(beta_2))**2
     w_1  = - np.sqrt(stage_off_design.wu**2 + stage_off_design.vm**2)
     delta_p_tot = 1/2 * coef_loss * stage_off_design.rho * w_1**2
 
@@ -122,7 +170,7 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     p_tot_rel_2  = p_tot_rel_1 - delta_p_tot
 
 
-    mac, c_rho = get_mac(area,T_tot_rel_2, p_tot_rel_2, beta_2, atm, compressor.m_dot)
+    mac = get_mac(area,T_tot_rel_2, p_tot_rel_2, beta_2, atm, compressor.m_dot)
 
     T_stat_2 = T_tot_rel_2 / (get_f_mac(mac, atm))
     p_stat_2 = p_tot_rel_2 * (T_stat_2/T_tot_rel_2)**(atm.gamma/(atm.gamma-1))
@@ -148,24 +196,23 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
 
     sensitivity = get_sensitivity_solidity_1_5(stage_off_design.alpha)
     aoa         = stage_off_design.alpha - blade_cascade.deflection_design_stator
-    delta_aoa   =(aoa - blade_cascade.aoa_design_stator)
+    delta_aoa   = (aoa - blade_cascade.aoa_design_stator)
     alpha_2     = stage_off_design.alpha - blade_cascade.deflection_design_stator - sensitivity * delta_aoa
     # print("##### OFF DESIGN STATOR #####")
-    # print("alpha 2 : ", np.rad2deg(alpha_2))
     delta_aoa = np.abs(aoa - blade_cascade.aoa_design_stator)
     alpha_naca = 0.0117
     D_eq = np.cos(alpha_2) / np.cos(stage_off_design.alpha) * (1.12 + alpha_naca * (delta_aoa)**1.43 
                                                                + 0.61 * np.cos(stage_off_design.alpha)**2/compressor.solidity 
                                                                * (np.tan(stage_off_design.alpha) - np.tan(alpha_2)))
     thinkness = get_momentum_thickness_off(D_eq)
-    coefficient_loss = 2 * thinkness * (compressor.solidity / np.cos(stage_off_design.alpha)) * (np.cos(stage_off_design.alpha) / np.cos(alpha_2))**2
+    coefficient_loss = 2 * thinkness * (compressor.solidity / np.cos(alpha_2)) * (np.cos(stage_off_design.alpha) / np.cos(alpha_2))**2
     v1 = np.sqrt(stage_off_design.vu**2 + stage_off_design.vm**2)
     delta_p_tot = 1/2 * coefficient_loss * stage_off_design.rho * v1**2
 
     T_tot_2 = stage_off_design.T_tot
     p_tot_2 = stage_off_design.p_tot - delta_p_tot
 
-    mac, c_rho = get_mac(area, T_tot_2, p_tot_2, alpha_2, atm, compressor.m_dot)
+    mac = get_mac(area, T_tot_2, p_tot_2, alpha_2, atm, compressor.m_dot)
 
     T_stat_2 = T_tot_2 / get_f_mac(mac, atm)
     p_stat_2 = p_tot_2 * (T_stat_2/T_tot_2)**(atm.gamma/(atm.gamma-1))
@@ -181,6 +228,7 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     wu2 = vu2 - stage_off_design.u
 
     beta_2 = np.arctan(wu2/vm2)
+    print("beta 2 : ", np.rad2deg(beta_2))
 
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma-1))
@@ -208,14 +256,14 @@ def get_OGV_off(compressor, atm, stage_off_design, area, blade_cascade) :
                                                                + 0.61 * np.cos(stage_off_design.alpha)**2/compressor.solidity 
                                                                * (np.tan(stage_off_design.alpha) - np.tan(alpha_2)))
     thinkness = get_momentum_thickness_off(D_eq)
-    coefficient_loss = 2 * thinkness * (compressor.solidity / np.cos(stage_off_design.alpha)) * (np.cos(stage_off_design.alpha) / np.cos(alpha_2))**2
+    coefficient_loss = 2 * thinkness * (compressor.solidity / np.cos(alpha_2)) * (np.cos(stage_off_design.alpha) / np.cos(alpha_2))**2
     v1 = np.sqrt(stage_off_design.vu**2 + stage_off_design.vm**2)
     delta_p_tot = 1/2 * coefficient_loss * stage_off_design.rho * v1**2
 
     T_tot_2 = stage_off_design.T_tot
     p_tot_2 = stage_off_design.p_tot - delta_p_tot
 
-    mac, c_rho = get_mac(area, T_tot_2, p_tot_2, alpha_2, atm, compressor.m_dot)
+    mac = get_mac(area, T_tot_2, p_tot_2, alpha_2, atm, compressor.m_dot)
 
     T_stat_2 = T_tot_2 / get_f_mac(mac, atm)
     p_stat_2 = p_tot_2 * (T_stat_2/T_tot_2)**(atm.gamma/(atm.gamma-1))
