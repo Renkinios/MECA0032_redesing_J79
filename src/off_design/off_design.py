@@ -6,7 +6,7 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     T_tot_1 = atm.Ta
     p_tot_1 = atm.Pa 
     rho_1   = atm.Pa/(atm.R * atm.Ta)
-    vm      =  compressor.m_dot / (compressor.A * atm.rho)
+    vm      =  compressor.m_dot / (compressor.area_entrance * atm.rho)
 
     print("vm", vm)
     T_1 = T_tot_1 - (vm**2)/(2*atm.Cp)
@@ -41,14 +41,6 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
 def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cascade) :
     p_tot2 = stage_off_design.p_tot
     T_tot2 = stage_off_design.T_tot
-    # print("arrea taking", stage_design[1].area)
-    # print("##### OFF DESIGN IGV #####")
-
-    # print(f"Area: {stage_design[1].area}\n"
-    #     f"T_tot2: {T_tot2}\n"
-    #     f"p_tot2: {p_tot2}\n"
-    #     f"Alpha1 Design (degrees): {np.degrees(blade_cascade.alpha1_design)}\n"
-    #     f"Compressor Mass Flow (m_dot): {compressor.m_dot}")
     mac = get_mac(stage_design[1].area, T_tot2, p_tot2, blade_cascade.alpha1_design, atm, compressor.m_dot)
 
     T_stat = T_tot2 / get_f_mac(mac, atm)
@@ -67,74 +59,73 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, wu, vu, beta_2, alpha_2, vm, compressor)
     return stage_IGV
 
-# def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
-#     """
-#     Calculate the Mach number (MAC) using a convergence method.
+def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
+    """
+    Calculate the Mach number (MAC) using a convergence method.
 
-#     Parameters:
-#     - area_design: section area
-#     - T_tot: total temperature
-#     - p_tot: total pressure
-#     - angle: attack angle in radians
-#     - atm: object containing atmospheric properties (R, gamma)
-#     - m_dot: mass flow rate
-#     - tol: tolerance for convergence (default: 1e-6)
-#     - max_iter: maximum number of iterations (default: 100)
+    Parameters:
+    - area_design: section area
+    - T_tot: total temperature
+    - p_tot: total pressure
+    - angle: attack angle in radians
+    - atm: object containing atmospheric properties (R, gamma)
+    - m_dot: mass flow rate
+    - tol: tolerance for convergence (default: 1e-6)
+    - max_iter: maximum number of iterations (default: 100)
 
-#     Returns:
-#     - mac: converged Mach number
-#     """
+    Returns:
+    - mac: converged Mach number
+    """
     
-#     def residual(mac):
-#         c_rho = m_dot / (area_design * np.cos(angle))
-#         left_side = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-#         f_m = get_f_mac(mac, atm)
-#         right_side = f_m**(- (atm.gamma + 1) / (2 * (atm.gamma - 1))) * np.sqrt(atm.gamma) * mac
-#         return left_side - right_side
+    def residual(mac):
+        c_rho = m_dot / (area_design * np.cos(angle))
+        left_side = c_rho * np.sqrt(atm.R * T_tot) / p_tot
+        f_m = get_f_mac(mac, atm)
+        right_side = f_m**(- (atm.gamma + 1) / (2 * (atm.gamma - 1))) * np.sqrt(atm.gamma) * mac
+        return left_side - right_side
 
-#     def derivative(mac):
-#         # Numerical approximation of the residual function derivative
-#         delta = 1e-8
-#         return (residual(mac + delta) - residual(mac - delta)) / (2 * delta)
+    def derivative(mac):
+        # Numerical approximation of the residual function derivative
+        delta = 1e-8
+        return (residual(mac + delta) - residual(mac - delta)) / (2 * delta)
 
-#     # Initialization
-#     mac = 0.5  # Initial guess
-#     for i in range(max_iter):
-#         res = residual(mac)
-#         deriv = derivative(mac)
+    # Initialization
+    mac = 0.5  # Initial guess
+    for i in range(max_iter):
+        res = residual(mac)
+        deriv = derivative(mac)
         
-#         if abs(res) < tol:  # Check for convergence
-#             return mac
+        if abs(res) < tol:  # Check for convergence
+            return mac
         
-#         if deriv == 0:
-#             raise ValueError("Zero derivative encountered, Newton's method fails.")
+        if deriv == 0:
+            raise ValueError("Zero derivative encountered, Newton's method fails.")
         
-#         mac -= res / deriv  # Update MAC
+        mac -= res / deriv  # Update MAC
         
-#         if mac < 0.1 or mac > 0.8:
-#             raise ValueError(f"Mach number out of bounds {mac}. Check input parameters.")
+        if mac < 0.1 or mac > 0.8:
+            raise ValueError(f"Mach number out of bounds {mac}. Check input parameters.")
     
-#     raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
+    raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
 
-def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
+# def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
 
-    mac = np.arange(0.1,0.75,0.001)
+#     mac = np.arange(0.1,0.75,0.001)
 
-    c_rho      = m_dot / (area_design * np.cos(angle))
-    left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-    f_m        = get_f_mac(mac, atm)
-    right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
-    mac = mac[np.argmin(abs(left_side - right_side))]
-    print("MAC", mac)
-    print("error", abs(left_side - right_side)[np.argmin(abs(left_side - right_side))])
-    return mac
+#     c_rho      = m_dot / (area_design * np.cos(angle))
+#     left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
+#     f_m        = get_f_mac(mac, atm)
+#     right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
+#     mac = mac[np.argmin(abs(left_side - right_side))]
+#     # print("MAC", mac)
+#     # print("error", abs(left_side - right_side)[np.argmin(abs(left_side - right_side))])
+#     return mac
 
 def get_f_mac(mac, atm) :
     f_m = 1 + (atm.gamma - 1)/2 * mac**2
     return f_m
 
 def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
-    # print("##### OFF DESIGN ROTOR #####")
     # print(f"Beta: {stage_off_design.beta} rad/s {np.rad2deg(stage_off_design.beta)}\n",
     #     f"T_stat: {stage_off_design.T_stat}\n"
     #     f"p_stat: {stage_off_design.p_stat}\n"
@@ -154,6 +145,9 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     # print("aoa_design_rotor", np.rad2deg(blade_cascade.aoa_design_rotor), blade_cascade.aoa_design_rotor)
     # print("deflection_design_rotor", np.rad2deg(blade_cascade.deflection_design_rotor), blade_cascade.deflection_design_rotor)
     beta_2      = stage_off_design.beta + blade_cascade.deflection_design_rotor + sensitivity * delta_aoa
+
+    if abs(stage_off_design.beta) >= blade_cascade.stall_rotor_pos or abs(stage_off_design.beta) <= blade_cascade.stall_rotor_neg:
+        raise ValueError(f'Beta rotor is in the stall region {np.rad2deg(abs(stage_off_design.beta))}')
 
     delta_aoa = np.abs(aoa - blade_cascade.aoa_design_rotor)
 
@@ -191,6 +185,7 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     vu2     = wu2 + stage_off_design.u
     alpha_2 = np.arctan(vu2/vm2)
 
+
     rho2 = p_stat_2 / (atm.R * T_stat_2)
 
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2 * atm.Cp)
@@ -206,8 +201,11 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     aoa         = stage_off_design.alpha - blade_cascade.stragger_stator
     delta_aoa   = (aoa - blade_cascade.aoa_design_stator)
     alpha_2     = stage_off_design.alpha - blade_cascade.deflection_design_stator - sensitivity * delta_aoa
-    # print("alpha_2", np.rad2deg(alpha_2))
-    # print("alpha 1", np.rad2deg(stage_off_design.alpha))
+
+    if np.abs(stage_off_design.alpha) >= blade_cascade.stall_stator_pos or np.abs(stage_off_design.alpha) <= blade_cascade.stall_stator_neg:
+        raise ValueError(f'Alpha stator is in the stall region {np.rad2deg(alpha_2)}')
+    
+
     delta_aoa = np.abs(aoa - blade_cascade.aoa_design_stator)
     alpha_naca = 0.0117
     D_eq = np.cos(alpha_2) / np.cos(stage_off_design.alpha) * (1.12 + alpha_naca * (delta_aoa)**1.43 
@@ -237,6 +235,7 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     wu2    = vu2 - stage_off_design.u
     beta_2 = np.arctan(wu2/vm2)
 
+
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
@@ -253,7 +252,9 @@ def get_OGV_off(compressor, atm, stage_off_design, area, blade_cascade) :
     aoa         = stage_off_design.alpha - blade_cascade.stragger_OGV
     delta_aoa   = (aoa - blade_cascade.aoa_design_OGV)
     alpha_2     = stage_off_design.alpha - blade_cascade.deflection_design_OGV - sensitivity * delta_aoa
-    alpha_2 = 0
+
+    if abs(stage_off_design.alpha) >= blade_cascade.stall_OGV_pos or abs(stage_off_design.alpha) <= blade_cascade.stall_OGV_neg:
+        raise ValueError(f'Alpha OGV is in the stall region {np.rad2deg(alpha_2)}')
 
     alpha_naca = 0.0117
     delta_aoa = np.abs(delta_aoa)

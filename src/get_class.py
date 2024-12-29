@@ -91,11 +91,11 @@ class Compressor:
         self.work_coeff = work_coeff
 
         # Calculate derived parameters
-        self.A = np.pi * (R_tip**2 - R_hub**2)  # Annular area (m^2)
+        self.area_entrance = np.pi * (R_tip**2 - R_hub**2)  # Annular area (m^2)
 
 
                 # Calculate velocities
-        v_m = self.m_dot / (self.A * atm.rho)  # Axial velocity (m/s)
+        v_m = self.m_dot / (self.area_entrance * atm.rho)  # Axial velocity (m/s)
         u   = (self.RPM * 2 * np.pi) / 60 * self.R_mean  # Tip speed (m/s)
         self.flow_coeff = v_m / u  # Flow coefficient
 
@@ -127,30 +127,28 @@ class CompressorTriangle:
     def __init__(self, compressor, atm):
         """
         Initialize the velocity triangle based on compressor parameters.
-        
+
         Args:
             compressor: An instance of the `Compressor` class containing
                         required geometric and operational parameters.
         """
-                
-        self.vm      = compressor.m_dot / (compressor.A * atm.rho)
-        self.u       = (compressor.RPM * 2 * np.pi) / 60 * compressor.R_mean
+        self.vm = compressor.m_dot / (compressor.area_entrance * atm.rho)
+        self.u = (compressor.RPM * 2 * np.pi) / 60 * compressor.R_mean
 
-        #Velocity Triangles
-        v_u_1 = self.vm * (((1-compressor.R)-(compressor.work_coeff/2))/compressor.flow_coeff)
-        w_u_1 = self.u - v_u_1 #-(-Rdeg - psi/2)*u
-        v_u_2 = (1 - compressor.R +compressor.work_coeff/2) * self.u
-        w_u_2 =  self.u - v_u_2 #-(-Rdeg + psi/2)*
-        
-        self.beta_1 = -np.arctan(( self.u  - v_u_1)/self.vm)
-        self.beta_2 = -np.arctan(( self.u  - v_u_2)/self.vm)
-        self.alpha_1 = np.arctan(v_u_1/self.vm)
-        self.alpha_2 = np.arctan(v_u_2/self.vm)
-        
-        # self.alpha_1 = np.arctan(((1 - compressor.R) - (compressor.work_coeff / 2)) / compressor.flow_coeff)
-        # self.alpha_2 = np.arctan(((1 - compressor.R) + (compressor.work_coeff / 2)) / compressor.flow_coeff)
-        # self.beta_1  = -self.alpha_2 
-        # self.beta_2  = -self.alpha_1
+        # Velocity Triangles
+        v_u_1 = self.vm * (((1 - compressor.R) - (compressor.work_coeff / 2)) / compressor.flow_coeff)
+        w_u_1 = self.u - v_u_1
+        v_u_2 = (1 - compressor.R + compressor.work_coeff / 2) * self.u
+        w_u_2 = self.u - v_u_2
+
+        self.beta_1 = -np.arctan((self.u - v_u_1) / self.vm)
+        self.beta_2 = -np.arctan((self.u - v_u_2) / self.vm)
+        self.alpha_1 = np.arctan(v_u_1 / self.vm)
+        self.alpha_2 = np.arctan(v_u_2 / self.vm)
+
+        # Set beta_outlet_OGV as None by default
+        self.beta_outlet_OGV = None
+        self.alpha_outlet_OGV = 0
 
     def __str__(self, degree=True):
         if degree:
@@ -159,17 +157,28 @@ class CompressorTriangle:
             beta_1 = np.degrees(self.beta_1)
             beta_2 = np.degrees(self.beta_2)
             unit = "°"
+            beta_outlet_OGV = (
+                f"{np.degrees(self.beta_outlet_OGV):.2f}{unit}"
+                if self.beta_outlet_OGV is not None
+                else "No value selected"
+            )
         else:
             alpha_1 = self.alpha_1
             alpha_2 = self.alpha_2
             beta_1 = self.beta_1
             beta_2 = self.beta_2
             unit = "rad"
+            beta_outlet_OGV = (
+                f"{self.beta_outlet_OGV:.2f}{unit}"
+                if self.beta_outlet_OGV is not None
+                else "No value selected"
+            )
 
         return (
             "########### Compressor Triangle Summary ############\n"
             f"alpha_1: {alpha_1:.2f}{unit}, alpha_2: {alpha_2:.2f}{unit}\n"
             f"beta_1: {beta_1:.2f}{unit}, beta_2: {beta_2:.2f}{unit}\n"
+            f"Outlet OGV angle: beta: {beta_outlet_OGV}, alpha: {self.alpha_outlet_OGV:.2f}{unit}\n"
             f"vm: {self.vm:.2f} m/s, u: {self.u:.2f} m/s"
         )
 

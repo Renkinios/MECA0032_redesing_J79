@@ -17,10 +17,12 @@ def get_pitching_design(compresor, atm) :
     p_1 = p_tot_1*(T_1/T_tot_1)**(atm.gamma/(atm.gamma-1))
     
     matrix_stage = np.zeros((compresor.number_stage) * 2 + 2, dtype= object) # take into acount the IGV and the state before it
-    stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1, 0, 0, 0, 0, triangle_compressor.vm, compresor)
+    stage_0         = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1, 0, 0, 0, 0, triangle_compressor.vm, compresor)
     matrix_stage[0] = stage_0
-    stage_IGV = get_IGV_outlet(stage_0, triangle_compressor, compresor, atm)
+     
+    stage_IGV       = get_IGV_outlet(stage_0, triangle_compressor, compresor, atm)
     matrix_stage[1] = stage_IGV
+
     for i in range(compresor.number_stage-1) :
         rotor_stage = get_rotor_outlet(matrix_stage[i * 2 + 1], triangle_compressor, compresor, atm)
         matrix_stage[i*2+2]     = rotor_stage
@@ -140,6 +142,8 @@ def get_OGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
 
     wu_2 = - triangle_compressor.u
     vu_1 = stage_inlet.vu
+    beta_2 = np.arctan(wu_2/triangle_compressor.vm)
+    triangle_compressor.beta_outlet_OGV = beta_2
     
     vu_2    =  0
     alpha_2 = 0
@@ -166,8 +170,8 @@ def get_OGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
     p_stat_2 = p_tot_2 * (T_stat_2/T_tot_2)**(atm.gamma/(atm.gamma-1))
 
     rho_2 = p_stat_2 / (atm.R*T_stat_2)
-    a = np.sqrt(atm.gamma*atm.R*T_stat_2)
-    mac = v2/a
+    a     = np.sqrt(atm.gamma*atm.R*T_stat_2)
+    mac   = v2/a
     if mac > 0.8:
         raise ValueError(f'Mach number is too high in the OGV {mac} > 0.8')
 
