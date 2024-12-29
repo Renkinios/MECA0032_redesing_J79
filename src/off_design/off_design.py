@@ -8,11 +8,10 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     rho_1   = atm.Pa/(atm.R * atm.Ta)
     vm      =  compressor.m_dot / (compressor.area_entrance * atm.rho)
 
-    print("vm", vm)
     T_1 = T_tot_1 - (vm**2)/(2*atm.Cp)
     p_1 = p_tot_1*(T_1/T_tot_1)**(atm.gamma/(atm.gamma-1))
     matrix_stage_OFF_design = np.zeros((compressor.number_stage) * 2 + 2, dtype= object) # take into acount the IGV and the state before it
-    stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1, 0, 0, 0, 0, vm, compressor)
+    stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,vm, compressor)
     matrix_stage_OFF_design[0] = stage_0
     stage_IGV = get_IGV_off_design(compressor, atm, stage_0 ,stage_design, blade_cascade)
     # print("Stage IGV vm : ", stage_IGV.vm)
@@ -37,27 +36,9 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
 
     return matrix_stage_OFF_design
 
-
-def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cascade) :
-    p_tot2 = stage_off_design.p_tot
-    T_tot2 = stage_off_design.T_tot
-    mac = get_mac(stage_design[1].area, T_tot2, p_tot2, blade_cascade.alpha1_design, atm, compressor.m_dot)
-
-    T_stat = T_tot2 / get_f_mac(mac, atm)
-    p_stat = p_tot2 *(T_stat/T_tot2)**(atm.gamma/(atm.gamma-1))
-    speed_sound = np.sqrt(atm.gamma * atm.R * T_stat)
-    v2 = mac * speed_sound
-    rho2 = p_stat / (atm.R * T_stat)
-    vm = v2 * np.cos(blade_cascade.alpha1_design)
-    vu = v2 * np.sin(blade_cascade.alpha1_design)
-    wu = vu - blade_cascade.u
-    beta_2  = np.arctan(wu/vm)
-    alpha_2 = np.arctan(vu/vm)
-    # print("vm", vm)
-    # print("Beta 2", np.rad2deg(beta_2))
-    # print("Alpha 2", np.rad2deg(alpha_2))
-    stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, wu, vu, beta_2, alpha_2, vm, compressor)
-    return stage_IGV
+def get_f_mac(mac, atm) :
+    f_m = 1 + (atm.gamma - 1)/2 * mac**2
+    return f_m
 
 def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
     """
@@ -108,22 +89,27 @@ def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100
     
     raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
 
-# def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
+def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cascade) :
+    p_tot2 = stage_off_design.p_tot
+    T_tot2 = stage_off_design.T_tot
+    mac = get_mac(stage_design[1].area, T_tot2, p_tot2, blade_cascade.alpha1_design, atm, compressor.m_dot)
 
-#     mac = np.arange(0.1,0.75,0.001)
+    T_stat = T_tot2 / get_f_mac(mac, atm)
+    p_stat = p_tot2 *(T_stat/T_tot2)**(atm.gamma/(atm.gamma-1))
+    speed_sound = np.sqrt(atm.gamma * atm.R * T_stat)
+    v2 = mac * speed_sound
+    rho2 = p_stat / (atm.R * T_stat)
+    vm = v2 * np.cos(blade_cascade.alpha1_design)
+    vu = v2 * np.sin(blade_cascade.alpha1_design)
+    wu = vu - blade_cascade.u
+    beta_2  = np.arctan(wu/vm)
+    alpha_2 = np.arctan(vu/vm)
+    # print("vm", vm)
+    # print("Beta 2", np.rad2deg(beta_2))
+    # print("Alpha 2", np.rad2deg(alpha_2))
+    stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, vm, compressor,wu, vu, beta_2, alpha_2, mac)
+    return stage_IGV
 
-#     c_rho      = m_dot / (area_design * np.cos(angle))
-#     left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-#     f_m        = get_f_mac(mac, atm)
-#     right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
-#     mac = mac[np.argmin(abs(left_side - right_side))]
-#     # print("MAC", mac)
-#     # print("error", abs(left_side - right_side)[np.argmin(abs(left_side - right_side))])
-#     return mac
-
-def get_f_mac(mac, atm) :
-    f_m = 1 + (atm.gamma - 1)/2 * mac**2
-    return f_m
 
 def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     # print(f"Beta: {stage_off_design.beta} rad/s {np.rad2deg(stage_off_design.beta)}\n",
@@ -191,7 +177,7 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2 * atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
-    stage_rotor = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, wu2, vu2, beta_2, alpha_2, vm2, compressor)
+    stage_rotor = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor,  wu2, vu2, beta_2, alpha_2,mac)
 
     return stage_rotor
 
@@ -239,7 +225,7 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
-    stage_stator = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, wu2, vu2, beta_2, alpha_2, vm2, compressor)
+    stage_stator = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor, wu2, vu2, beta_2, alpha_2, mac)
 
     return stage_stator
 
@@ -292,5 +278,5 @@ def get_OGV_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma-1))
 
-    stage_OGV = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, wu2, vu2, beta_2, alpha_2, vm2, compressor)
+    stage_OGV = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2,  vm2, compressor, wu2, vu2, beta_2, alpha_2,mac)
     return stage_OGV

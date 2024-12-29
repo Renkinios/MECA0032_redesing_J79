@@ -12,7 +12,8 @@ class atmosphere :
 
 
 class Stage:
-    def __init__(self, stage_number, T_stat, p_stat, T_tot, p_tot, rho, w_u, v_u, beta, alpha, vm, compressor) :        
+    def __init__(self, stage_number, T_stat, p_stat, T_tot, p_tot, rho, vm, compressor, w_u=None, v_u=None, beta=None, alpha=None, mac=None):
+ 
         self.stage_number = stage_number
         self.T_stat = T_stat
         self.p_stat = p_stat
@@ -26,8 +27,9 @@ class Stage:
         self.area = compressor.m_dot/(self.rho * vm)
         self.rtip = compressor.R_mean + self.area/(4 * np.pi * compressor.R_mean)
         self.rhub = compressor.R_mean - self.area/(4 * np.pi * compressor.R_mean)
-        self.beta = beta # just use for the off design
+        self.beta = beta
         self.alpha = alpha
+        self.mac = mac
 
     def __str__(self):
         """
@@ -39,15 +41,15 @@ class Stage:
             f"  Static Pressure (p_stat): {self.p_stat:.2f} Pa\n"
             f"  Total Temperature (T_tot): {self.T_tot:.2f} K\n"
             f"  Total Pressure (p_tot): {self.p_tot:.2f} Pa\n"
-            f"  Axial Velocity (v_u): {self.vu:.2f} m/s\n"
-            f"  Tangential Velocity (w_u): {self.wu:.2f} m/s\n" 
-            f"  Meriodonial velocity (vm): {self.vm:.2f} m/s\n"
+            f"  Axial Velocity (v_u): {self.vu:.2f} m/s\n" if self.vu is not None else "  Axial Velocity (v_u): None\n"
+            f"  Tangential Velocity (w_u): {self.wu:.2f} m/s\n" if self.wu is not None else "  Tangential Velocity (w_u): None\n"
+            f"  Meriodonial velocity (vm): {self.vm:.2f} m/s\n" 
             f"  Density (rho): {self.rho:.2f} kg/m^3\n"
             f"  Tip Radius (r_tip): {self.rtip:.4f} m\n"
-            f"  Hub Radius (r_hub): {self.rhub:.4f} m \n"
-            f"  Area: {self.area:.4f} m^2\n"
-            f"  Beta: {np.degrees(self.beta):.2f}°\n"
-            f"  Alpha: {np.degrees(self.alpha):.2f}°"
+            f"  Hub Radius (r_hub): {self.rhub:.4f} m\n"
+            f"  Area: {self.area:.4f} m^2\n" 
+            f"  Beta: {np.degrees(self.beta):.2f}°\n" if self.beta is not None else "  Beta: None\n"
+            f"  Alpha: {np.degrees(self.alpha):.2f}°" if self.alpha is not None else "  Alpha: None"
         )
 
 
