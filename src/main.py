@@ -32,11 +32,11 @@ layout_stage, triangle_compressor = pd.get_pitching_design(compressor, atm)
 di.viz_interpolation()
 
 print(compressor)
-# OPR =  layout_stage[-1].p_tot/layout_stage[0].p_tot 
+OPR =  layout_stage[-1].p_tot/layout_stage[0].p_tot 
 print("############## Rotor Triangle ##############")
 print(triangle_compressor)
-# print("############## OPR ##############")
-# print(OPR)
+print("############## OPR ##############")
+print(OPR)
 
 viz.viz_pressure_stage(layout_stage)
 viz.viz_temperature_stage(layout_stage)
@@ -47,31 +47,41 @@ print("############## Sensitivity solidity ##############")
 
 # ---------------- Chossen blade -------------
 stragger_rotor  = 32 * np.pi/180
-stragger_stator = 22 * np.pi/180
-stragger_OGV    = 15 * np.pi/180
+stall_pos_rotor = 0.5
+stall_neg_rotor = 0.5
 
-blade_cascade = cl.blade_cascade(triangle_compressor, stragger_rotor, stragger_stator, stragger_OGV)
+stragger_stator = 22 * np.pi/180
+stall_pos_stator = 0.5
+stall_neg_stator = 0.5
+
+stragger_OGV    = 15 * np.pi/180
+stall_pos_OGV   = 0.5
+stall_neg_OGV   = 0.5
+
+
+blade_cascade = cl.blade_cascade(triangle_compressor, stragger_rotor, stragger_stator, stragger_OGV, stall_pos_rotor, stall_neg_rotor, 
+                                 stall_pos_stator, stall_neg_stator, stall_pos_OGV, stall_neg_OGV)
 
 
 # ---------------- OFF DESIGN ----------------
 
 print("############## Off Design ##############")
-layout_stage_off = od.get_pitching_OFF_design(compressor, atm, layout_stage, blade_cascade)
+# layout_stage_off = od.get_pitching_OFF_design(compressor, atm, layout_stage, blade_cascade)
 
 
-compressor_10off    = cl.Compressor(solidity, poly_eff, R_hub, R_tip, m_dot, RPM *1.05, atm, Nbr_stage, reaction_degree, Work_Coeff)
-layout_stage_off_10 = od.get_pitching_OFF_design(compressor_10off, atm, layout_stage, blade_cascade)
+# compressor_10off    = cl.Compressor(solidity, poly_eff, R_hub, R_tip, m_dot, RPM *1.05, atm, Nbr_stage, reaction_degree, Work_Coeff)
+# layout_stage_off_10 = od.get_pitching_OFF_design(compressor_10off, atm, layout_stage, blade_cascade)
 
 compreessor_10down  = cl.Compressor(solidity, poly_eff, R_hub, R_tip, m_dot, RPM*0.9, atm, Nbr_stage, reaction_degree, Work_Coeff)
 layout_stage_down_10 = od.get_pitching_OFF_design(compreessor_10down, atm, layout_stage, blade_cascade)
 
-viz.viz_off_design_severl_vm(layout_stage_off, layout_stage_off_10, layout_stage_down_10)
+# viz.viz_off_design_severl_vm(layout_stage_off, layout_stage_off_10, layout_stage_down_10)
 # viz.viz_off_design_vm(layout_stage_off)
-# viz.viz_off_design_p_tot(layout_stage_off)
+viz.viz_off_design_p_tot(layout_stage_down_10)
 # viz.viz_off_design_T_tot(layout_stage_off)
 # viz.viz_data_comp_off_and_on_p_tot(layout_stage_off, layout_stage)
 # viz.viz_data_comp_off_and_on_T_tot(layout_stage_off, layout_stage)
-viz.viz_off_design_several_p_tot(layout_stage, layout_stage_off_10, layout_stage_down_10)
+# viz.viz_off_design_several_p_tot(layout_stage, layout_stage_off_10, layout_stage_down_10)
 
 
 

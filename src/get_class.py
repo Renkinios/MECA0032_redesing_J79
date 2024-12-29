@@ -218,7 +218,8 @@ class CompressorTriangle:
 
 
 class blade_cascade :
-    def __init__(self, triangle, stragger_stator, stragger_rotor, stragger_OGV) :
+    def __init__(self, triangle, stragger_stator, stragger_rotor, stragger_OGV, stall_negative_rotor, stall_positive_rotor,
+                  stall_negative_stator, stall_positive_stator, stall_negative_OGV, stall_positive_OGV):
         
         self.stragger_stator   = stragger_stator
         self.stragger_rotor    = stragger_rotor
@@ -227,18 +228,20 @@ class blade_cascade :
         self.aoa_design_rotor  = -triangle.beta_1 - stragger_rotor
         self.aoa_design_OGV    = triangle.alpha_2 - stragger_OGV
 
-        self.deflection_design_stator = np.abs(triangle.alpha_1 - triangle.alpha_2)#inverse due to the fact that the sttor is at the second position
+        self.deflection_design_stator = np.abs(triangle.alpha_1 - triangle.alpha_2)  # inverse due to the fact that the stator is at the second position
         self.deflection_design_rotor  = np.abs(triangle.beta_2 - triangle.beta_1)
-        self.deflection_design_OGV    = np.abs(triangle.alpha_1)
+        self.deflection_design_OGV    = np.abs(triangle.alpha_2)
         self.beta1_design      = triangle.beta_1
         self.alpha1_design     = triangle.alpha_1
         self.beta2_design      = triangle.beta_2
         self.alpha2_design     = triangle.alpha_2
 
-        self.beta_1_off_design  = None
-        self.alpha_1_off_design = None
-        self.beta_2_off_design  = None
-        self.alpha_2_off_design = None
+        self.stall_rotor_neg  = stall_negative_rotor
+        self.stall_rotor_pos  = stall_positive_rotor
+        self.stall_stator_neg = stall_negative_stator
+        self.stall_stator_pos = stall_positive_stator
+        self.stall_OGV_neg    = stall_negative_OGV
+        self.stall_OGV_pos    = stall_positive_OGV
 
         self.u = triangle.u
         self.vm = triangle.vm

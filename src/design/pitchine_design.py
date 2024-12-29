@@ -75,7 +75,7 @@ def get_rotor_outlet(stage_inlet, triangle_compressor, compressor, atm) :
 
     moment_thickness = di.get_interpolation_diffusion(DF)
 
-    loss_coeff       = 2 * moment_thickness * (compressor.solidity/(np.cos(triangle_compressor.beta_2)))  * (np.cos(triangle_compressor.beta_1) /np.cos(triangle_compressor.beta_2))**2
+    loss_coeff       = 2 * moment_thickness * (compressor.solidity/(np.cos(-triangle_compressor.beta_2)))  * (np.cos(-triangle_compressor.beta_1) /np.cos(-triangle_compressor.beta_2))**2
     delta_p_tot      = 1/2 * loss_coeff * stage_inlet.rho * w1**2
 
     T_tot_rel_2  = T_tot_rel_1 # u same 
