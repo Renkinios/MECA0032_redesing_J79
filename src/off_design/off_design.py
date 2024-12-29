@@ -5,8 +5,8 @@ import get_class as cl
 def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     T_tot_1 = atm.Ta
     p_tot_1 = atm.Pa 
-    rho_1 = atm.Pa/(atm.R * atm.Ta)
-    vm =  compressor.m_dot / (compressor.A * atm.rho)
+    rho_1   = atm.Pa/(atm.R * atm.Ta)
+    vm      =  compressor.m_dot / (compressor.A * atm.rho)
 
     print("vm", vm)
     T_1 = T_tot_1 - (vm**2)/(2*atm.Cp)
@@ -16,10 +16,9 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     matrix_stage_OFF_design[0] = stage_0
     stage_IGV = get_IGV_off_design(compressor, atm, stage_0 ,stage_design, blade_cascade)
     # print("Stage IGV vm : ", stage_IGV.vm)
-    
     matrix_stage_OFF_design[1] = stage_IGV
     for i in range(compressor.number_stage-1) :
-        print("Stage number : ", i)
+        # print("Stage number : ", i)
         rotor_stage = get_rotor_off(compressor, atm, matrix_stage_OFF_design[i * 2 + 1], stage_design[2*i + 2].area, blade_cascade)
         matrix_stage_OFF_design[i*2+2]     = rotor_stage
         # print(rotor_stage)
@@ -68,67 +67,67 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, wu, vu, beta_2, alpha_2, vm, compressor)
     return stage_IGV
 
-def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
-    """
-    Calculate the Mach number (MAC) using a convergence method.
+# def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot, tol=1e-6, max_iter=100):
+#     """
+#     Calculate the Mach number (MAC) using a convergence method.
 
-    Parameters:
-    - area_design: section area
-    - T_tot: total temperature
-    - p_tot: total pressure
-    - angle: attack angle in radians
-    - atm: object containing atmospheric properties (R, gamma)
-    - m_dot: mass flow rate
-    - tol: tolerance for convergence (default: 1e-6)
-    - max_iter: maximum number of iterations (default: 100)
+#     Parameters:
+#     - area_design: section area
+#     - T_tot: total temperature
+#     - p_tot: total pressure
+#     - angle: attack angle in radians
+#     - atm: object containing atmospheric properties (R, gamma)
+#     - m_dot: mass flow rate
+#     - tol: tolerance for convergence (default: 1e-6)
+#     - max_iter: maximum number of iterations (default: 100)
 
-    Returns:
-    - mac: converged Mach number
-    """
+#     Returns:
+#     - mac: converged Mach number
+#     """
     
-    def residual(mac):
-        c_rho = m_dot / (area_design * np.cos(angle))
-        left_side = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-        f_m = get_f_mac(mac, atm)
-        right_side = f_m**(- (atm.gamma + 1) / (2 * (atm.gamma - 1))) * np.sqrt(atm.gamma) * mac
-        return left_side - right_side
+#     def residual(mac):
+#         c_rho = m_dot / (area_design * np.cos(angle))
+#         left_side = c_rho * np.sqrt(atm.R * T_tot) / p_tot
+#         f_m = get_f_mac(mac, atm)
+#         right_side = f_m**(- (atm.gamma + 1) / (2 * (atm.gamma - 1))) * np.sqrt(atm.gamma) * mac
+#         return left_side - right_side
 
-    def derivative(mac):
-        # Numerical approximation of the residual function derivative
-        delta = 1e-8
-        return (residual(mac + delta) - residual(mac - delta)) / (2 * delta)
+#     def derivative(mac):
+#         # Numerical approximation of the residual function derivative
+#         delta = 1e-8
+#         return (residual(mac + delta) - residual(mac - delta)) / (2 * delta)
 
-    # Initialization
-    mac = 0.5  # Initial guess
-    for i in range(max_iter):
-        res = residual(mac)
-        deriv = derivative(mac)
+#     # Initialization
+#     mac = 0.5  # Initial guess
+#     for i in range(max_iter):
+#         res = residual(mac)
+#         deriv = derivative(mac)
         
-        if abs(res) < tol:  # Check for convergence
-            return mac
+#         if abs(res) < tol:  # Check for convergence
+#             return mac
         
-        if deriv == 0:
-            raise ValueError("Zero derivative encountered, Newton's method fails.")
+#         if deriv == 0:
+#             raise ValueError("Zero derivative encountered, Newton's method fails.")
         
-        mac -= res / deriv  # Update MAC
+#         mac -= res / deriv  # Update MAC
         
-        if mac < 0.1 or mac > 0.8:
-            raise ValueError(f"Mach number out of bounds {mac}. Check input parameters.")
+#         if mac < 0.1 or mac > 0.8:
+#             raise ValueError(f"Mach number out of bounds {mac}. Check input parameters.")
     
-    raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
+#     raise RuntimeError("Convergence not achieved after the maximum number of iterations.")
 
-# def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
+def get_mac(area_design, T_tot, p_tot, angle, atm, m_dot) :
 
-#     mac = np.arange(0.1,0.75,0.001)
+    mac = np.arange(0.1,0.75,0.001)
 
-#     c_rho      = m_dot / (area_design * np.cos(angle))
-#     left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
-#     f_m        = get_f_mac(mac, atm)
-#     right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
-#     mac = mac[np.argmin(abs(left_side - right_side))]
-#     print("MAC", mac)
-#     print("error", abs(left_side - right_side)[np.argmin(abs(left_side - right_side))])
-#     return mac
+    c_rho      = m_dot / (area_design * np.cos(angle))
+    left_side  = c_rho * np.sqrt(atm.R * T_tot) / p_tot
+    f_m        = get_f_mac(mac, atm)
+    right_side = f_m**(- (atm.gamma+1)/(2*(atm.gamma-1))) * np.sqrt(atm.gamma) * mac
+    mac = mac[np.argmin(abs(left_side - right_side))]
+    print("MAC", mac)
+    print("error", abs(left_side - right_side)[np.argmin(abs(left_side - right_side))])
+    return mac
 
 def get_f_mac(mac, atm) :
     f_m = 1 + (atm.gamma - 1)/2 * mac**2
@@ -155,21 +154,23 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     # print("aoa_design_rotor", np.rad2deg(blade_cascade.aoa_design_rotor), blade_cascade.aoa_design_rotor)
     # print("deflection_design_rotor", np.rad2deg(blade_cascade.deflection_design_rotor), blade_cascade.deflection_design_rotor)
     beta_2      = stage_off_design.beta + blade_cascade.deflection_design_rotor + sensitivity * delta_aoa
-    beta_2 = beta_2
-    delta_aoa = np.abs(aoa - blade_cascade.aoa_design_rotor)
 
-    T_tot_rel_1 = stage_off_design.T_stat + (stage_off_design.wu**2 + stage_off_design.vm**2)/(2 * atm.Cp) 
-    p_tot_rel_1 = stage_off_design.p_tot  * (T_tot_rel_1/stage_off_design.T_tot)**(atm.gamma/(atm.gamma - 1))
+    delta_aoa = np.abs(aoa - blade_cascade.aoa_design_rotor)
 
     alph_naca = 0.0117
 
     Deq = np.cos(-beta_2) / np.cos(-stage_off_design.beta) * (1.12 + alph_naca * (delta_aoa)**1.43 
                                                               + 0.61 * np.cos(-stage_off_design.beta)**2/compressor.solidity 
                                                               * (np.tan(-stage_off_design.beta) - np.tan(-beta_2)))
+    
     thinkness = get_momentum_thickness_off(Deq)
 
-    coef_loss = 2 * thinkness * (compressor.solidity / np.cos(-beta_2)) *(np.cos(-stage_off_design.beta) / np.cos(-beta_2))**2
-    w1  = - np.sqrt(stage_off_design.wu**2 + stage_off_design.vm**2)
+
+    T_tot_rel_1 = stage_off_design.T_stat + (stage_off_design.wu**2 + stage_off_design.vm**2)/(2 * atm.Cp) 
+    p_tot_rel_1 = stage_off_design.p_tot  * (T_tot_rel_1/stage_off_design.T_tot)**(atm.gamma/(atm.gamma - 1))
+    
+    coef_loss   = 2 * thinkness * (compressor.solidity / np.cos(-beta_2)) *(np.cos(-stage_off_design.beta) / np.cos(-beta_2))**2
+    w1          = - np.sqrt(stage_off_design.wu**2 + stage_off_design.vm**2)
     delta_p_tot = 1/2 * coef_loss * stage_off_design.rho * w1**2
 
     T_tot_rel_2  = T_tot_rel_1 # u same 
