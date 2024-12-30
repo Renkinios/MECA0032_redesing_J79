@@ -17,7 +17,7 @@ def get_pitching_design(compresor, atm) :
     p_1 = p_tot_1*(T_1/T_tot_1)**(atm.gamma/(atm.gamma-1))
     
     matrix_stage = np.zeros((compresor.number_stage) * 2 + 2, dtype= object) # take into acount the IGV and the state before it
-    stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,triangle_compressor.vm, compresor)
+    stage_0 = cl.station_compressor(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,triangle_compressor.vm, compresor)
     matrix_stage[0] = stage_0
      
     stage_IGV       = get_IGV_outlet(stage_0, triangle_compressor, compresor, atm)
@@ -51,7 +51,7 @@ def get_IGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
     # print("Mac IGV", Mw)
     if Mw > 0.8:
         raise ValueError(f"Mach number is too high in the IGV {Mw} > 0.8")    
-    outlet_IGV = cl.Stage(1, T_stat, p_stat, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor,  wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2, Mw)
+    outlet_IGV = cl.station_compressor(1, T_stat, p_stat, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor,  wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2, Mw)
     return outlet_IGV
 
 
@@ -96,7 +96,7 @@ def get_rotor_outlet(stage_inlet, triangle_compressor, compressor, atm) :
     # print("MAC rotor", mac)
     if mac > 0.8:
         raise ValueError(f'Mach number is too high in the rotor in the rotor {mac} > 0.8')
-    outlet_rotor = cl.Stage(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor, wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2,mac)
+    outlet_rotor = cl.station_compressor(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor, wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2,mac)
 
     return outlet_rotor
 
@@ -135,7 +135,7 @@ def get_stator_outlet(stage_inlet, triangle_compressor, compressor, atm) :
     mac = v2/a
     if mac > 0.8:
         raise ValueError(f'Mach number is too high in the stator {mac} > 0.8')
-    outlet_stator = cl.Stage(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor,wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2, mac)
+    outlet_stator = cl.station_compressor(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor,wu_2, vu_2,triangle_compressor.beta_2, triangle_compressor.alpha_2, mac)
     return outlet_stator
 
 def get_OGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
@@ -176,5 +176,5 @@ def get_OGV_outlet(stage_inlet, triangle_compressor, compressor, atm) :
     if mac > 0.8:
         raise ValueError(f'Mach number is too high in the OGV {mac} > 0.8')
 
-    outlet_OGV = cl.Stage(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor, wu_2, vu_2, triangle_compressor.beta_2, triangle_compressor.alpha_2, mac)
+    outlet_OGV = cl.station_compressor(stage_inlet.stage_number + 1, T_stat_2, p_stat_2, T_tot_2, p_tot_2, rho_2, triangle_compressor.vm, compressor, wu_2, vu_2, triangle_compressor.beta_2, triangle_compressor.alpha_2, mac)
     return outlet_OGV

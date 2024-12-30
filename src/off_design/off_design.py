@@ -11,7 +11,7 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     T_1 = T_tot_1 - (vm**2)/(2*atm.Cp)
     p_1 = p_tot_1*(T_1/T_tot_1)**(atm.gamma/(atm.gamma-1))
     matrix_stage_OFF_design = np.zeros((compressor.number_stage) * 2 + 2, dtype= object) # take into acount the IGV and the state before it
-    stage_0 = cl.Stage(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,vm, compressor)
+    stage_0 = cl.station_compressor(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,vm, compressor)
     matrix_stage_OFF_design[0] = stage_0
     stage_IGV = get_IGV_off_design(compressor, atm, stage_0 ,stage_design, blade_cascade)
     # print("Stage IGV vm : ", stage_IGV.vm)
@@ -107,7 +107,7 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     # print("vm", vm)
     # print("Beta 2", np.rad2deg(beta_2))
     # print("Alpha 2", np.rad2deg(alpha_2))
-    stage_IGV = cl.Stage(1, T_stat, p_stat, T_tot2, p_tot2, rho2, vm, compressor,wu, vu, beta_2, alpha_2, mac)
+    stage_IGV = cl.station_compressor(1, T_stat, p_stat, T_tot2, p_tot2, rho2, vm, compressor,wu, vu, beta_2, alpha_2, mac)
     return stage_IGV
 
 
@@ -177,7 +177,7 @@ def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2 * atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
-    stage_rotor = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor,  wu2, vu2, beta_2, alpha_2,mac)
+    stage_rotor = cl.station_compressor(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor,  wu2, vu2, beta_2, alpha_2,mac)
 
     return stage_rotor
 
@@ -225,7 +225,7 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 
-    stage_stator = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor, wu2, vu2, beta_2, alpha_2, mac)
+    stage_stator = cl.station_compressor(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2, vm2, compressor, wu2, vu2, beta_2, alpha_2, mac)
 
     return stage_stator
 
@@ -278,5 +278,5 @@ def get_OGV_off(compressor, atm, stage_off_design, area, blade_cascade) :
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma-1))
 
-    stage_OGV = cl.Stage(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2,  vm2, compressor, wu2, vu2, beta_2, alpha_2,mac)
+    stage_OGV = cl.station_compressor(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2,  vm2, compressor, wu2, vu2, beta_2, alpha_2,mac)
     return stage_OGV

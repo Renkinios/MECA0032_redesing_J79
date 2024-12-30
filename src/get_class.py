@@ -11,7 +11,7 @@ class atmosphere :
         self.rho = 1.225          # sea level
 
 
-class Stage:
+class station_compressor:
     def __init__(self, stage_number, T_stat, p_stat, T_tot, p_tot, rho, vm, compressor, w_u=None, v_u=None, beta=None, alpha=None, mac=None):
  
         self.stage_number = stage_number
