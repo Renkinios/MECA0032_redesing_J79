@@ -23,13 +23,13 @@ The J79 engine has been featured in various prototypes, proposed briefly as an a
 
 | Parameter                         | Value                    |
 |-----------------------------------|--------------------------|
-| Overall Pressure Ratio (OPR)      | 13.5                    |
+| Overall Pressure Ratio (OPR)      | **13.5**                    |
 | Turbine Inlet Temperature (TIT)   | 987 °C                  |
 | Engine Airflow ($\dot{m}$)        | 77 kg/s                 |
 | Thrust ($T$)                      | 52.8 kN / 80 kN         |
 | Thrust Specific Fuel Consumption (SFC) | 23.8 g/s/kN / 57.5 g/s/kN |
 
-The engine features a single spool configuration, consisting of a 17-stage axial compressor with variable inlet guide vanes (VIGV) and six variable stator vanes (VSV), powered by a three-stage axial turbine. Its afterburner employs effusion cooling via turbine exhaust gases through the liner, and the nozzle is a purely converging variable outlet. 
+The engine features a single spool configuration, consisting of a **17-stage axial compressor** with variable inlet guide vanes (VIGV) and six variable stator vanes (VSV), powered by a three-stage axial turbine. Its afterburner employs effusion cooling via turbine exhaust gases through the liner, and the nozzle is a purely converging variable outlet. 
 
 The outer diameter of the engine envelope, including the casing and piping, is approximately 90 cm. The compressor's tip radius remains constant, while the hub diameter increases to compensate for rising air density. For this exercise, the compressor **tip diameter** is assumed to be **80 cm**, with a uniform flow path contraction maintaining a consistent mean radius.
 
