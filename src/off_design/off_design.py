@@ -14,22 +14,15 @@ def get_pitching_OFF_design(compressor, atm, stage_design, blade_cascade) :
     stage_0 = cl.station_compressor(0, T_1, p_1, T_tot_1, p_tot_1, rho_1,vm, compressor)
     matrix_stage_OFF_design[0] = stage_0
     stage_IGV = get_IGV_off_design(compressor, atm, stage_0 ,stage_design, blade_cascade)
-    # print("Stage IGV vm : ", stage_IGV.vm)
+
     matrix_stage_OFF_design[1] = stage_IGV
     for i in range(compressor.number_stage-1) :
-        # print("Stage number : ", i)
         rotor_stage = get_rotor_off(compressor, atm, matrix_stage_OFF_design[i * 2 + 1], stage_design[2*i + 2].area, blade_cascade)
         matrix_stage_OFF_design[i*2+2]     = rotor_stage
-        # print(rotor_stage)
         stator_stage = get_stator_off(compressor, atm, matrix_stage_OFF_design[2*i + 2], stage_design[2*i + 3].area, blade_cascade)
         matrix_stage_OFF_design[(i*2) + 3] = stator_stage
-        # print("Rotor vm : ", rotor_stage.vm)
-        # print("Stator vm : ", stator_stage.vm)
-        # print(stator_stage)
-        # if i ==2 :
-        
     rotor_before_OGV = get_rotor_off(compressor, atm, matrix_stage_OFF_design[2 * (compressor.number_stage) - 1], stage_design[2 * (compressor.number_stage)].area, blade_cascade)
-    # print(rotor_before_OGV)
+
     matrix_stage_OFF_design[(compressor.number_stage) * 2 ] = rotor_before_OGV
     OGV_stage = get_OGV_off(compressor, atm, matrix_stage_OFF_design[(compressor.number_stage )*2 ], stage_design[(compressor.number_stage)*2 + 1].area, blade_cascade)
     matrix_stage_OFF_design[(compressor.number_stage)*2 + 1] = OGV_stage
@@ -104,32 +97,15 @@ def get_IGV_off_design(compressor, atm, stage_off_design, stage_design,blade_cas
     wu = vu - blade_cascade.u
     beta_2  = np.arctan(wu/vm)
     alpha_2 = np.arctan(vu/vm)
-    # print("vm", vm)
-    # print("Beta 2", np.rad2deg(beta_2))
-    # print("Alpha 2", np.rad2deg(alpha_2))
     stage_IGV = cl.station_compressor(1, T_stat, p_stat, T_tot2, p_tot2, rho2, vm, compressor,wu, vu, beta_2, alpha_2, mac)
     return stage_IGV
 
 
-def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :
-    # print(f"Beta: {stage_off_design.beta} rad/s {np.rad2deg(stage_off_design.beta)}\n",
-    #     f"T_stat: {stage_off_design.T_stat}\n"
-    #     f"p_stat: {stage_off_design.p_stat}\n"
-    #     f"T_tot: {stage_off_design.T_tot}\n"
-    #     f"p_tot: {stage_off_design.p_tot}\n"
-    #     f"vm: {stage_off_design.vm}\n"
-    #     f"vu: {stage_off_design.vu}\n"
-    #     f"Blade Cascade u: {blade_cascade.u}\n"
-    #     f"Compressor Mass Flow: {compressor.m_dot}\n"
-    #     f"Area: {area}")    
+def get_rotor_off(compressor, atm, stage_off_design, area, blade_cascade) :    
     
     sensitivity = get_sensitivity_solidity_1_5(stage_off_design.beta)
     aoa         = -stage_off_design.beta - blade_cascade.stragger_rotor
     delta_aoa   = (aoa - blade_cascade.aoa_design_rotor)
-
-    # print("aoa", np.rad2deg(aoa))
-    # print("aoa_design_rotor", np.rad2deg(blade_cascade.aoa_design_rotor), blade_cascade.aoa_design_rotor)
-    # print("deflection_design_rotor", np.rad2deg(blade_cascade.deflection_design_rotor), blade_cascade.deflection_design_rotor)
     beta_2      = stage_off_design.beta + blade_cascade.deflection_design_rotor + sensitivity * delta_aoa
 
     if abs(stage_off_design.beta) >= blade_cascade.stall_rotor_pos or abs(stage_off_design.beta) <= blade_cascade.stall_rotor_neg:
@@ -220,8 +196,6 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
     vm2    = v2 * np.cos(alpha_2)
     wu2    = vu2 - stage_off_design.u
     beta_2 = np.arctan(wu2/vm2)
-
-
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
     p_tot = p_stat_2 * (T_tot/T_stat_2)**(atm.gamma/(atm.gamma - 1))
 

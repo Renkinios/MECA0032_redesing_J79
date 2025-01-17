@@ -43,14 +43,14 @@ pip install -r requirements.txt
 
 The project is made in 3 part : the design, the 3D design and also the off-design. 
 
-### Design
+#### Design
 The design part can be computated in the main like this
 
 ```bash
 python src/main.py
 ```
 
-### 3D Design
+#### 3D Design
 
 The 3D design part can be computated in the main like this
 
@@ -58,7 +58,7 @@ The 3D design part can be computated in the main like this
 src/3D/main.py
 ```
 
-### Off-design
+#### Off-design
 
 The off-design is also on the main to have the area find by the design, but can be taking outside and juste selected the area for time compilation. 
 
@@ -82,6 +82,13 @@ Contains the figures of the project, organized as follows:
 ### **`src/`**
 Contains the source code of the project, organized as follows:
 
+- **`get_class.py`**: Code defining the classes used in the project:
+  - **`atmosphere`**: Represents atmospheric conditions at sea level.
+  - **`compressor`**: Contains compressor-related data.
+  - **`CompressorTriangle`**: Represents the compressor velocity triangle for pre-design when $v_m = \text{constant}$.
+  - **`blade_cascade`**: Contains data for cascades used in off-design analysis.
+  - **`station_compressor`**: Represents data for each compressor station.
+
 - **`design/`**: Code for the design part:
   - **`diffusion_interpolation.py`**: Implements the interpolation of diffusion to determine thickness.
   - **`pitchline_design.py`**: Contains the pitchline method for compressor design.
@@ -97,13 +104,6 @@ Contains the source code of the project, organized as follows:
     - Interpolation of $\zeta$ to calculate the derivative $\frac{d\varepsilon}{d\text{aoa}}$.
 
 - **`main.py`**: Main script to run the project.
-- **`get_class.py`**: Code defining the classes used in the project:
-  - **`atmosphere`**: Represents atmospheric conditions at sea level.
-  - **`compressor`**: Contains compressor-related data.
-  - **`CompressorTriangle`**: Represents the compressor velocity triangle for pre-design when $v_m = \text{constant}$.
-  - **`blade_cascade`**: Contains data for cascades used in off-design analysis.
-  - **`station_compressor`**: Represents data for each compressor station.
-
 - **`VizData.py`**: Code for generating visualizations and figures.
 
 

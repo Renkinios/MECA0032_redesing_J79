@@ -12,22 +12,10 @@ plt.rcParams.update({
 })
 
 color_list = [
-    "#1f77b4",  # Bleu (standard, agréable pour les graphiques)
-    "#ff7f0e",  # Orange (chaleureux et visible)
-    "#2ca02c",  # Vert (équilibré)
-    "#d62728",  # Rouge (contrasté)
-    "#9467bd",  # Violet (subtil et élégant)
-    "#8c564b",  # Marron (neutre et sérieux)
-    "#e377c2",  # Rose (dynamique)
-    "#7f7f7f",  # Gris (sophistiqué et neutre)
-    "#bcbd22",  # Vert-jaune (vivant)
-    "#17becf",  # Cyan (frais et lumineux)
-    "#ff9896",  # Rose clair (soft contrast)
-    "#c5b0d5",  # Violet clair (épuré)
-    "#9edae5",  # Cyan clair (moderne)
-    "#f7b6d2",  # Rose pastel (doux)
-    "#ffbb78",  # Orange pastel (chaleur)
+    "#007070", "#f07f3c", "#5b57a2", "#7db928", "#e62d31",
+    "#005ca9", "#00843b", "#f8aa00", "#5b257d", "#8c8b82"
 ]
+ligne_or_text = "#DCE6EA"
 
 DF = [0.012941176470588248, 0.03823529411764707, 0.0423529411764706, 0.052352941176470595, 
      0.07411764705882354, 0.08294117647058824, 0.08823529411764706, 0.09764705882352942, 
@@ -98,7 +86,7 @@ def viz_interpolation():
     plt.scatter(DF, moment_thickness, facecolors='none', edgecolors=color_list[0], label=r'Data', s=50, alpha=0.7)
     plt.plot(x_query, y_query, label=r'Degree 4 Fit', linestyle='-', linewidth=2, color = color_list[1])
     plt.xlabel(r'Diffusion Factor DF [-]')
-    plt.ylabel(r'Moment Thickness $\theta/c$ [-]')
+    plt.ylabel(r'Moment Thickness $\delta_2/c$ [-]')
     plt.legend()
     plt.savefig("../figures/interpolation_diffusion.pdf", dpi=300, bbox_inches='tight')
     plt.close()

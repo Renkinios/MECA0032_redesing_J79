@@ -6,28 +6,20 @@ from labellines import labelLine, labelLines
 plt.rc('font', family='serif')  # Police avec empattements, comme Times
 plt.rc('text', usetex=True)  # Utiliser LaTeX pour le texte dans les figures
 plt.rcParams.update({
-    'font.size': 14,       # Taille de police générale
-    'legend.fontsize': 14, # Taille de police pour les légendes
-    'axes.labelsize': 17,  # Taille de police pour les étiquettes des axes
+    'font.size': 18,         # Taille générale de la police
+    'legend.fontsize': 35,   # Taille de la police des légendes
+    'axes.labelsize': 50,    # Taille de la police des étiquettes des axes
+    'axes.titlesize': 50,    # Taille de la police pour les titres des axes
+    'xtick.labelsize': 20,   # Taille de la police pour les graduations de l'axe des X
+    'ytick.labelsize': 20,   # Taille de la police pour les graduations de l'axe des Y
+    'text.usetex': True,     # Confirmer l'utilisation de LaTeX pour tout le texte
+    'figure.titlesize': 50   # Taille de la police pour les titres des figures
 })
-
 color_list = [
-    "#1b4f72",  # Bleu foncé (élégant et classique)
-    "#c0392b",  # Rouge foncé (puissant et contrasté)
-    "#196f3d",  # Vert foncé (nature et stabilité)
-    "#7d3c98",  # Violet foncé (subtil et élégant)
-    "#b9770e",  # Orange foncé (chaleureux et dynamique)
-    "#5d6d7e",  # Gris-bleu foncé (neutre et moderne)
-    "#34495e",  # Bleu nuit (professionnel et sobre)
-    "#7e5109",  # Marron foncé (neutre et sérieux)
-    "#117864",  # Vert émeraude foncé (frais et équilibré)
-    "#6c3483",  # Violet profond (raffiné et audacieux)
-    "#884ea0",  # Violet moyen (doux et épuré)
-    "#2874a6",  # Bleu profond (épuré et professionnel)
-    "#d35400",  # Orange brûlé (dynamique et chaud)
-    "#cb4335",  # Rouge brique (contrasté et intense)
-    "#1d8348",  # Vert sombre (nature et stabilité)
+    "#007070", "#f07f3c", "#5b57a2", "#7db928", "#e62d31",
+    "#005ca9", "#00843b", "#f8aa00", "#5b257d", "#8c8b82"
 ]
+ligne_or_text = "#DCE6EA"
 
 def viz_triangle_velocity(v_m, w_u, v_u, inlet =True):
     nbr  = 1 if inlet else 2
@@ -71,7 +63,18 @@ def viz_triangle_velocity(v_m, w_u, v_u, inlet =True):
     plt.savefig(f"../figures/design/velocity_triangle_{file_type}.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
-
+plt.rc('font', family='serif')
+plt.rc('text', usetex=True)
+plt.rcParams.update({
+    'font.size': 18,         # Taille générale de la police
+    'legend.fontsize': 35,   # Taille de la police des légendes
+    'axes.labelsize': 50,    # Taille de la police des étiquettes des axes
+    'axes.titlesize': 50,    # Taille de la police pour les titres des axes
+    'xtick.labelsize': 20,   # Taille de la police pour les graduations de l'axe des X
+    'ytick.labelsize': 20,   # Taille de la police pour les graduations de l'axe des Y
+    'text.usetex': True,     # Confirmer l'utilisation de LaTeX pour tout le texte
+    'figure.titlesize': 50   # Taille de la police pour les titres des figures
+})
 def viz_pressure_stage(layout_stage) :
     plt.figure(figsize=(10, 6))
     plt.plot([stage.p_stat*1e-6 for stage in layout_stage], label=r"$p_{stat}$", color=color_list[0], linestyle='-.')
@@ -84,6 +87,7 @@ def viz_pressure_stage(layout_stage) :
     plt.close()
 
 def viz_temperature_stage(layout_stage) :
+        # Assurez-vous que les paramètres sont bien appliqués
     plt.figure(figsize=(10, 6))
     plt.plot([stage.T_stat for stage in layout_stage], label=r"$T_{stat}$", color=color_list[0], linestyle='-.')
     plt.plot([stage.T_tot for stage in layout_stage], label=r"$T_{tot}$", color=color_list[1])
@@ -136,7 +140,7 @@ def viz_off_design_T_tot(layout_stage_off) :
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
     # plt.savefig(f"../figures/off_design/T_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+
     plt.close()
 
 def viz_off_design_p_tot(layout_stage_off) :
@@ -200,7 +204,7 @@ def viz_off_design_severl_vm(layout_stage, layout_stage_off, layout_stage_down) 
     plt.show()
     plt.close()
 
-def viz_off_design_OPR(dic_operationel_different_n, OPR_dico):
+def viz_off_design_OPR(dic_operationel_different_n, OPR_dico, path):
     fig, ax = plt.subplots(figsize=(10, 6))
     lines = []  # Stocker les lignes pour l'étiquetage
 
@@ -225,16 +229,16 @@ def viz_off_design_OPR(dic_operationel_different_n, OPR_dico):
                        zorder=5)
 
     # Placer les labels à la fin de chaque courbe
-    labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
+    # labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
 
     ax.set_xlabel(r"Mass flow rate $\dot{m}$ [kg/s]")
     ax.set_ylabel(r"Pressure ratio $\Pi$ [-]")
 
-    plt.savefig(f"../figures/off_design/OPR.pdf", dpi=300, bbox_inches='tight')
+    plt.savefig(path, dpi=300, bbox_inches='tight')
     plt.close()
 
 
-def viz_off_design_eff(dic_operationel_different_n, eff_dico_n):
+def viz_off_design_eff(dic_operationel_different_n, eff_dico_n, path):
     fig, ax = plt.subplots(figsize=(10, 6))
     lines = []  # Stocker les lignes pour l'étiquetage
 
@@ -259,12 +263,12 @@ def viz_off_design_eff(dic_operationel_different_n, eff_dico_n):
                        zorder=5)
 
     # Placer les labels à la fin de chaque courbe
-    labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
+    # labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
 
     ax.set_xlabel(r"Mass flow rate $\dot{m}$ [kg/s]")
     ax.set_ylabel(r"Efficiency $\eta$ [\%]")
-    plt.savefig(f"../figures/off_design/efficiency.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(path, dpi=300, bbox_inches='tight')
+
     plt.close()
 
 
@@ -362,7 +366,6 @@ def viz_alpha_stall_operating_point(path, layout_stage_off_neg_stall, layout_sta
 
 def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, blade_cascade, layout_stag_design = []):
     plt.figure(figsize=(10, 6))
-
     # Calculer les angles alpha
     if len(layout_stag_design) > 0:
         alpha_design = [np.degrees(stage.alpha) for stage in layout_stag_design[2::2]]
@@ -440,3 +443,21 @@ def viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layou
     # Sauvegarder et fermer
     plt.savefig(f"{path}/beta_stall_rotor.pdf", dpi=300, bbox_inches='tight')
     plt.close()
+
+def viz_VSV_stragger_rotor(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []) :
+    if len(layout_stag_design) > 0 :
+        stagger_stator = [np.degrees(stage.stagger) for stage in layout_stag_design[3:-1:2]]
+    
+    stragger_neg_stall = [np.degrees(stage.stagger) for stage in layout_stage_off_neg_stall[3:-1:2]]
+    stragger_pos_stall = [np.degrees(stage.stagger) for stage in layout_stage_off_pos_stall[3:-1:2]]
+    x_labels = np.arange(1, len(stragger_neg_stall) + 1)
+    if len(layout_stag_design) > 0 :
+        plt.plot(x_labels, stagger_stator, label=r"$\dot{m}_{design}$", color=color_list[0])
+
+    plt.plot(x_labels, stragger_neg_stall, label=r"$\dot{m}_{min}$", color=color_list[1])
+    plt.plot(x_labels, stragger_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
+    plt.xlim(x_labels[0], x_labels[-1])
+    plt.xlabel(r"Number of rotor [-]")
+    plt.ylabel(r"Stagger angle [°]")
+    plt.legend()
+    plt.savefig(f"{path}/VSV_stagger_rotor.pdf", dpi=300, bbox_inches='tight')

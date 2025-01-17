@@ -15,22 +15,26 @@ plt.rcParams.update({
     'axes.labelsize': 17,  # Taille de police pour les étiquettes des axes
 })
 
+# color_list = [
+#     "#1b4f72",  # Bleu foncé (élégant et classique)
+#     "#c0392b",  # Rouge foncé (puissant et contrasté)
+#     "#196f3d",  # Vert foncé (nature et stabilité)
+#     "#7d3c98",  # Violet foncé (subtil et élégant)
+#     "#b9770e",  # Orange foncé (chaleureux et dynamique)
+#     "#5d6d7e",  # Gris-bleu foncé (neutre et moderne)
+#     "#34495e",  # Bleu nuit (professionnel et sobre)
+#     "#7e5109",  # Marron foncé (neutre et sérieux)
+#     "#117864",  # Vert émeraude foncé (frais et équilibré)
+#     "#6c3483",  # Violet profond (raffiné et audacieux)
+#     "#884ea0",  # Violet moyen (doux et épuré)
+#     "#2874a6",  # Bleu profond (épuré et professionnel)
+#     "#d35400",  # Orange brûlé (dynamique et chaud)
+#     "#cb4335",  # Rouge brique (contrasté et intense)
+#     "#1d8348",  # Vert sombre (nature et stabilité)
+# ]
 color_list = [
-    "#1b4f72",  # Bleu foncé (élégant et classique)
-    "#c0392b",  # Rouge foncé (puissant et contrasté)
-    "#196f3d",  # Vert foncé (nature et stabilité)
-    "#7d3c98",  # Violet foncé (subtil et élégant)
-    "#b9770e",  # Orange foncé (chaleureux et dynamique)
-    "#5d6d7e",  # Gris-bleu foncé (neutre et moderne)
-    "#34495e",  # Bleu nuit (professionnel et sobre)
-    "#7e5109",  # Marron foncé (neutre et sérieux)
-    "#117864",  # Vert émeraude foncé (frais et équilibré)
-    "#6c3483",  # Violet profond (raffiné et audacieux)
-    "#884ea0",  # Violet moyen (doux et épuré)
-    "#2874a6",  # Bleu profond (épuré et professionnel)
-    "#d35400",  # Orange brûlé (dynamique et chaud)
-    "#cb4335",  # Rouge brique (contrasté et intense)
-    "#1d8348",  # Vert sombre (nature et stabilité)
+    "#007070", "#f07f3c", "#5b57a2", "#7db928", "#e62d31",
+    "#005ca9", "#00843b", "#f8aa00", "#5b257d", "#8c8b82"
 ]
 
 # ------------------------------------------------------------------------------
@@ -38,34 +42,38 @@ color_list = [
 # ------------------------------------------------------------------------------
 ## --- operating parameters
 
-rHub = 0.18888888888888888
-rTip = 0.4
-omega = 7103 * 2 * np.pi / 60
+## --- operating parameters
+rHub = 0.2
+rTip = 0.4 
+rot = 7103
+psiMid = 0.5 #0.52 
 reaction = 0.6
-psiMid = 0.5
-phiMid = 0.735
-
-alpha_1 = np.arctan(((1 - reaction) - (psiMid / 2)) / phiMid)
-alpha_2 = np.arctan(((1 - reaction) + (psiMid / 2)) / phiMid)
-beta_1  = alpha_2 
-beta_2  = alpha_1
 
 
+omega = (2*np.pi*rot)/60 #742.46 
+mdot = 77
+Area_in = np.pi*(rTip**2 - (rHub**2))
+rho = 1.225
+v_m = mdot/(rho*Area_in)
+u_ = omega*((rHub+rTip)/2)
+phiMid = v_m/u_ #0.7485613674966183 
 
+## --- interval discretisation and 6 order accurate quadrature rule
+nbPoints = 50
+skip = nbPoints/10
+quadPnt = [-7.745966692414834e-01,0.000000000000000e+00,7.745966692414834e-01]
+quadWgt = [5.555555555555552e-01, 8.888888888888888e-01,5.555555555555552e-01]
 # --- derived parameters
 rMid = (rHub+rTip)/2
-
 uHub = omega*rHub
 uTip = omega*rTip
 uMid = omega*rMid
-
-psiTip = psiMid*(rMid*rMid)/(rTip*rTip)
-phiTip = phiMid*(rMid/rTip)
-
+psiTip = psiMid * (rMid**2) / (rTip**2)
+phiTip = phiMid * (rMid / rTip)
 psiHub = psiTip*(rTip*rTip)/(rHub*rHub)
 phiHub = phiTip* rTip /rHub
-
-vmGlb = phiTip * (uTip)
+vmGlb = v_m
+print("Global meridional velocity: vm = ", vmGlb) 
 #-------------------------------------------------------------------------------
 # whirl velocity is defined as vu = a + b r + c/r
 #-------------------------------------------------------------------------------
@@ -160,7 +168,6 @@ def plot_angle(r, u, vm1, vu1, wu1, vm2, vu2, wu2, name):
     ax2.tick_params(axis='y', labelcolor=color_list[2])  # Sync tick labels with color_list[2]
     ax2.spines['right'].set_color(color_list[2])  # Set the color of the right spine
     ax2.set_xlim(rHub, rTip)
-    ax2.axhline(y=0.5, linestyle='--', color='k')
     ax2.axvline(x=rMid, linestyle='--', color='k')
 
     # Plot alpha and beta angles
@@ -170,7 +177,7 @@ def plot_angle(r, u, vm1, vu1, wu1, vm2, vu2, wu2, name):
     lns4 = ax1.plot(r, -np.arctan(wu2 / vm2) * 180 / np.pi, '-.', color=color_list[1], label="$-\\beta_2$")
 
     # Plot reaction
-    reaction = 1 - (wu1 + wu2) / (2 * u)
+    reaction = - (wu1 + wu2) / (2 * u)
     lns5 = ax2.plot(r, reaction, color=color_list[2], label="$~R$")
 
     # Combine legends

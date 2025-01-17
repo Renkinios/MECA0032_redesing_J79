@@ -12,22 +12,10 @@ plt.rcParams.update({
 })
 
 color_list = [
-    "#1b4f72",  # Bleu foncé (élégant et classique)
-    "#c0392b",  # Rouge foncé (puissant et contrasté)
-    "#196f3d",  # Vert foncé (nature et stabilité)
-    "#7d3c98",  # Violet foncé (subtil et élégant)
-    "#b9770e",  # Orange foncé (chaleureux et dynamique)
-    "#5d6d7e",  # Gris-bleu foncé (neutre et moderne)
-    "#34495e",  # Bleu nuit (professionnel et sobre)
-    "#7e5109",  # Marron foncé (neutre et sérieux)
-    "#117864",  # Vert émeraude foncé (frais et équilibré)
-    "#6c3483",  # Violet profond (raffiné et audacieux)
-    "#884ea0",  # Violet moyen (doux et épuré)
-    "#2874a6",  # Bleu profond (épuré et professionnel)
-    "#d35400",  # Orange brûlé (dynamique et chaud)
-    "#cb4335",  # Rouge brique (contrasté et intense)
-    "#1d8348",  # Vert sombre (nature et stabilité)
+    "#007070", "#f07f3c", "#5b57a2", "#7db928", "#e62d31",
+    "#005ca9", "#00843b", "#f8aa00", "#5b257d", "#8c8b82"
 ]
+ligne_or_text = "#DCE6EA"
 
 def sensitivity_15(angle, plot = False):
     Deviation_sensitivity = [0.9285106468770559, 0.9421276651281425, 0.9565957537159332, 
@@ -170,7 +158,7 @@ def get_momentum_thickness_off(Deq_value, plot=False):
         # plt.plot(x, y, 'o', label="Data points")
         plt.plot(Deq, Momentum_thickness, '-', color = "#1b4f72")
         plt.xlabel(r"Equivalent diffusion ratio $D_{eq}$")
-        plt.ylabel(r"Momentum thickness $\theta/c$")
+        plt.ylabel(r"Momentum thickness $\gamma/c$")
         plt.legend()
         plt.show()
         plt.close()

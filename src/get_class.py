@@ -12,7 +12,7 @@ class atmosphere :
 
 
 class station_compressor:
-    def __init__(self, stage_number, T_stat, p_stat, T_tot, p_tot, rho, vm, compressor, w_u=None, v_u=None, beta=None, alpha=None, mac=None):
+    def __init__(self, stage_number, T_stat, p_stat, T_tot, p_tot, rho, vm, compressor, w_u=None, v_u=None, beta=None, alpha=None, mac=None,stagger=None):
  
         self.stage_number = stage_number
         self.T_stat = T_stat
@@ -30,6 +30,7 @@ class station_compressor:
         self.beta = beta
         self.alpha = alpha
         self.mac = mac
+        self.stagger = stagger
 
     def __str__(self):
         """
