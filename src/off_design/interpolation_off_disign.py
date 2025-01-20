@@ -156,13 +156,15 @@ def get_momentum_thickness_off(Deq_value, plot=False):
     if plot:
         plt.figure(figsize=(8, 5))
         # plt.plot(x, y, 'o', label="Data points")
-        plt.plot(Deq, Momentum_thickness, '-', color = "#1b4f72")
+        plt.plot(Deq, Momentum_thickness, '-', color = color_list[0])
         plt.xlabel(r"Equivalent diffusion ratio $D_{eq}$")
-        plt.ylabel(r"Momentum thickness $\gamma/c$")
-        plt.legend()
-        plt.show()
+        plt.ylabel(r"Momentum thickness $\delta_2/c$")
+        # plt.legend()
+        plt.xlim(np.min(Deq), np.max(Deq))
+        plt.savefig("../figures/momentum_thickness_app.pdf", dpi=300, bbox_inches='tight')
         plt.close()
 
     # Return the value of the polynomial for the given Deq_value
     return polynomial(Deq_value)
 
+get_momentum_thickness_off(1.5, plot=True)

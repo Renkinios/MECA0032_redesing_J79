@@ -76,7 +76,6 @@ plt.rcParams.update({
     'figure.titlesize': 50   # Taille de la police pour les titres des figures
 })
 def viz_pressure_stage(layout_stage) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.p_stat*1e-6 for stage in layout_stage], label=r"$p_{stat}$", color=color_list[0], linestyle='-.')
     plt.plot([stage.p_tot*1e-6 for stage in layout_stage], label=r"$p_{tot}$", color=color_list[1])
     plt.xlabel(r"Number of stage [-]")
@@ -88,7 +87,6 @@ def viz_pressure_stage(layout_stage) :
 
 def viz_temperature_stage(layout_stage) :
         # Assurez-vous que les paramètres sont bien appliqués
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.T_stat for stage in layout_stage], label=r"$T_{stat}$", color=color_list[0], linestyle='-.')
     plt.plot([stage.T_tot for stage in layout_stage], label=r"$T_{tot}$", color=color_list[1])
     plt.xlabel(r"Number of stage [-]")
@@ -99,7 +97,6 @@ def viz_temperature_stage(layout_stage) :
     plt.close()
 
 def viz_density_stage(layout_stage) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.rho for stage in layout_stage], color=color_list[0])
     plt.xlabel(r"Number of stage [-]")
     plt.ylabel(r"Density [kg/m$^3$]")
@@ -108,7 +105,6 @@ def viz_density_stage(layout_stage) :
     plt.close()
 
 def viz_radius(layout_stage, R_mean) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.rtip for stage in layout_stage], label=r"$r_{tip}$", color=color_list[0])
     plt.plot([stage.rhub for stage in layout_stage], label=r"$r_{hub}$", color=color_list[1])
     plt.hlines(R_mean, 0, len(layout_stage), colors='black', linestyle='-.')
@@ -122,7 +118,6 @@ def viz_radius(layout_stage, R_mean) :
 
 
 def viz_off_design_vm(layout_stage_off) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.vm for stage in layout_stage_off], label=r"$v_m$", color=color_list[0])
     plt.xlabel(r"Number of stage [-]")
     plt.ylabel(r"Mean velocity [m/s]")
@@ -133,7 +128,6 @@ def viz_off_design_vm(layout_stage_off) :
     plt.close()
 
 def viz_off_design_T_tot(layout_stage_off) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.T_tot for stage in layout_stage_off], label=r"$T_{tot}$", color=color_list[0])
     plt.xlabel(r"Number of stage [-]")
     plt.ylabel(r"Total temperature [K]")
@@ -144,7 +138,6 @@ def viz_off_design_T_tot(layout_stage_off) :
     plt.close()
 
 def viz_off_design_p_tot(layout_stage_off) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.p_tot for stage in layout_stage_off], label=r"$p_{tot}$", color=color_list[0])
     plt.xlabel(r"Number of stage [-]")
     plt.ylabel(r"Total pressure [Pa]")
@@ -156,7 +149,6 @@ def viz_off_design_p_tot(layout_stage_off) :
 
 
 def viz_data_comp_off_and_on_p_tot(layout_stage_off, layout_stage) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.p_tot for stage in layout_stage_off], label=r"$p_{tot} off$", color=color_list[0])
     plt.plot([stage.p_tot for stage in layout_stage], label=r"$p_{tot} on$", color=color_list[1])
     plt.xlabel(r"Number of stage [-]")
@@ -168,7 +160,6 @@ def viz_data_comp_off_and_on_p_tot(layout_stage_off, layout_stage) :
     plt.close()
 
 def viz_data_comp_off_and_on_T_tot(layout_stage_off, layout_stage) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.T_tot for stage in layout_stage_off], label=r"$T_{tot} off$", color=color_list[0])
     plt.plot([stage.T_tot for stage in layout_stage], label=r"$T_{tot} on$", color=color_list[1])
     plt.xlabel(r"Number of stage [-]")
@@ -180,7 +171,6 @@ def viz_data_comp_off_and_on_T_tot(layout_stage_off, layout_stage) :
     plt.close()
 
 def viz_off_design_several_p_tot(layout_stage, layout_stage_off, layout_stage_down) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.p_tot for stage in layout_stage], label=r"$n_{design}$", color=color_list[0])
     plt.plot([stage.p_tot for stage in layout_stage_off], label=r"$ 1.05 \cdot n_{design}$", color=color_list[1])
     plt.plot([stage.p_tot for stage in layout_stage_down], label=r"$0.9 \cdot n_{design}$", color=color_list[2])
@@ -192,7 +182,6 @@ def viz_off_design_several_p_tot(layout_stage, layout_stage_off, layout_stage_do
     plt.show()
 
 def viz_off_design_severl_vm(layout_stage, layout_stage_off, layout_stage_down) :
-    plt.figure(figsize=(10, 6))
     plt.plot([stage.vm for stage in layout_stage], label=r"$n_{design}$", color=color_list[0])
     plt.plot([stage.vm for stage in layout_stage_off], label=r"$ 1.05 \cdot n_{design}$", color=color_list[1])
     plt.plot([stage.vm for stage in layout_stage_down], label=r"$0.9 \cdot n_{design}$", color=color_list[2])
@@ -211,6 +200,8 @@ def viz_off_design_OPR(dic_operationel_different_n, OPR_dico, path):
     for key in dic_operationel_different_n.keys():
         # Assigner un label pour labellines et utiliser '_nolegend_' pour exclure de la légende
         label = fr'${key:.2f} n^*$'
+        if len(dic_operationel_different_n[key]['m_dot']) == 0:
+            continue
         line, = ax.plot(dic_operationel_different_n[key]['m_dot'], 
                         OPR_dico[key], 
                         color='black', 
@@ -229,7 +220,7 @@ def viz_off_design_OPR(dic_operationel_different_n, OPR_dico, path):
                        zorder=5)
 
     # Placer les labels à la fin de chaque courbe
-    # labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
+    labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
 
     ax.set_xlabel(r"Mass flow rate $\dot{m}$ [kg/s]")
     ax.set_ylabel(r"Pressure ratio $\Pi$ [-]")
@@ -245,6 +236,8 @@ def viz_off_design_eff(dic_operationel_different_n, eff_dico_n, path):
     for key in dic_operationel_different_n.keys():
         # Assigner un label pour labellines et utiliser '_nolegend_' pour exclure de la légende
         label = fr'${key:.2f} n^*$'
+        if len(dic_operationel_different_n[key]['m_dot']) == 0:
+            continue
         line, = ax.plot(dic_operationel_different_n[key]['m_dot'], 
                         eff_dico_n[key], 
                         color='black', 
@@ -263,7 +256,7 @@ def viz_off_design_eff(dic_operationel_different_n, eff_dico_n, path):
                        zorder=5)
 
     # Placer les labels à la fin de chaque courbe
-    # labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
+    labelLines(lines, zorder=2.5, align=False, xvals=[line.get_xdata()[-1] for line in lines])
 
     ax.set_xlabel(r"Mass flow rate $\dot{m}$ [kg/s]")
     ax.set_ylabel(r"Efficiency $\eta$ [\%]")
@@ -273,7 +266,6 @@ def viz_off_design_eff(dic_operationel_different_n, eff_dico_n, path):
 
 
 def viz_vm_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.vm for stage in layout_stag_design], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.vm for stage in layout_stage_off_neg_stall], label=r"$\dot{m}_{min}$" , color=color_list[1])
@@ -287,7 +279,6 @@ def viz_vm_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_o
     plt.close()
 
 def viz_mac_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.mac for stage in layout_stag_design[1:]], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.mac for stage in layout_stage_off_neg_stall[1:]], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -300,7 +291,6 @@ def viz_mac_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_
     plt.close()
 
 def viz_p_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.p_tot for stage in layout_stag_design], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.p_tot for stage in layout_stage_off_neg_stall], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -313,7 +303,6 @@ def viz_p_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_sta
     plt.close()
 
 def viz_T_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.T_tot for stage in layout_stag_design], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.T_tot for stage in layout_stage_off_neg_stall], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -326,7 +315,6 @@ def viz_T_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_sta
     plt.close()
 
 def viz_p_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.p_stat for stage in layout_stag_design], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.p_stat for stage in layout_stage_off_neg_stall], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -339,7 +327,6 @@ def viz_p_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_st
     plt.close()
 
 def viz_T_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([stage.T_stat for stage in layout_stag_design], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([stage.T_stat for stage in layout_stage_off_neg_stall], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -352,7 +339,6 @@ def viz_T_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_st
     plt.close()
 
 def viz_alpha_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([np.degrees(stage.alpha) for stage in layout_stag_design[1:]], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([np.degrees(stage.alpha) for stage in layout_stage_off_neg_stall[1:]], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -365,7 +351,6 @@ def viz_alpha_stall_operating_point(path, layout_stage_off_neg_stall, layout_sta
     plt.close()
 
 def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, blade_cascade, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     # Calculer les angles alpha
     if len(layout_stag_design) > 0:
         alpha_design = [np.degrees(stage.alpha) for stage in layout_stag_design[2::2]]
@@ -382,7 +367,7 @@ def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, lay
 
     # Ajouter les lignes de position de décrochage
     plt.hlines(np.degrees(blade_cascade.stall_stator_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
-    plt.text(2, np.degrees(blade_cascade.stall_stator_neg) + 0.5, r"Stall position", color='black', fontsize=14, ha='center')
+    plt.text(2, np.degrees(blade_cascade.stall_stator_neg) - 0.7, r"Stall position", color='black', fontsize=14, ha='center')
     plt.hlines(np.degrees(blade_cascade.stall_stator_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
     plt.text(2, np.degrees(blade_cascade.stall_stator_pos) + 0.5, r"Stall position", color='black', fontsize=14, ha='center')
 
@@ -398,7 +383,6 @@ def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, lay
     plt.close()
 
 def viz_beta_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
     if len(layout_stag_design) > 0:
         plt.plot([-np.degrees(stage.beta) for stage in layout_stag_design[1:]], label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot([-np.degrees(stage.beta) for stage in layout_stage_off_neg_stall[1:]], label=r"$\dot{m}_{min}$", color=color_list[1])
@@ -411,7 +395,6 @@ def viz_beta_stall_operating_point(path, layout_stage_off_neg_stall, layout_stag
     plt.close()
 
 def viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, blade_cascade, layout_stag_design = []):
-    plt.figure(figsize=(10, 6))
 
     # Calculer les angles beta
     if len(layout_stag_design) > 0:
@@ -444,20 +427,18 @@ def viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layou
     plt.savefig(f"{path}/beta_stall_rotor.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
-def viz_VSV_stragger_rotor(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design = []) :
-    if len(layout_stag_design) > 0 :
-        stagger_stator = [np.degrees(stage.stagger) for stage in layout_stag_design[3:-1:2]]
+def viz_VSV_stragger_rotor(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,  blade_cascade) :
+
     
     stragger_neg_stall = [np.degrees(stage.stagger) for stage in layout_stage_off_neg_stall[3:-1:2]]
     stragger_pos_stall = [np.degrees(stage.stagger) for stage in layout_stage_off_pos_stall[3:-1:2]]
     x_labels = np.arange(1, len(stragger_neg_stall) + 1)
-    if len(layout_stag_design) > 0 :
-        plt.plot(x_labels, stagger_stator, label=r"$\dot{m}_{design}$", color=color_list[0])
-
-    plt.plot(x_labels, stragger_neg_stall, label=r"$\dot{m}_{min}$", color=color_list[1])
-    plt.plot(x_labels, stragger_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
+    plt.hlines(np.degrees(blade_cascade.stragger_stator), x_labels[0], x_labels[-1], colors=color_list[2], linestyle='-.', label=r"design stragger ")
+    plt.plot(x_labels, stragger_neg_stall, label=r"$\dot{m}_{min}$", color=color_list[0])
+    plt.plot(x_labels, stragger_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[1])
     plt.xlim(x_labels[0], x_labels[-1])
     plt.xlabel(r"Number of rotor [-]")
     plt.ylabel(r"Stagger angle [°]")
     plt.legend()
     plt.savefig(f"{path}/VSV_stagger_rotor.pdf", dpi=300, bbox_inches='tight')
+    plt.close()

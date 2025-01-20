@@ -194,6 +194,7 @@ def get_stator_off(compressor, atm, stage_off_design, area, blade_cascade) :
 
     vu2    = v2 * np.sin(alpha_2)
     vm2    = v2 * np.cos(alpha_2)
+
     wu2    = vu2 - stage_off_design.u
     beta_2 = np.arctan(wu2/vm2)
     T_tot = T_stat_2 + (vm2**2 + vu2**2)/(2*atm.Cp)
