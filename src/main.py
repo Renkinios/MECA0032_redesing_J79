@@ -66,7 +66,7 @@ blade_cascade = cl.blade_cascade(triangle_compressor, stragger_rotor, stragger_s
 
 # ---------------- OFF DESIGN ----------------
 
-print("############## Off Design ##############")
+print("############## Run Off Design ##############")
 
 
 layout_stage_off_design = od.get_pitching_OFF_design(design_compressor, atm, layout_stage, blade_cascade)
@@ -99,13 +99,15 @@ viz.all_plot_out_design_stage(path,layout_stage_off_mat[0], layout_stage_off_mat
 
 m_dot_array = np.linspace(60, 90, 500)
 n_array = np.linspace(0.9, 1.05, 7)
-eff_dico_n, OPR_dico_n = od.eff_OPR_off_design_compressor(m_dot_array, n_array, design_compressor, atm, layout_stage, blade_cascade)
+eff_dico_n, OPR_dico_n, dic_operationel_different_n = od.eff_OPR_off_design_compressor(m_dot_array, n_array, design_compressor, atm, layout_stage, blade_cascade)
+viz.viz_off_design_OPR(dic_operationel_different_n, OPR_dico_n, f"../figures/off_design/OPR.pdf")
+viz.viz_off_design_eff(dic_operationel_different_n, eff_dico_n, f"../figures/off_design/eff.pdf")
 
 
 
 
 # ---------------- VSV ----------------
-print("############## VSV ##############")
+print("############## Run VSV ##############")
 m_dot_mat  = np.linspace(70, 87, 100)
 
 layout_stage_off_mat = max_min_m_dot_VSV_compressor(m_dot_mat, 1, design_compressor, atm, layout_stage, blade_cascade)
@@ -113,7 +115,7 @@ layout_stage_off_mat = max_min_m_dot_VSV_compressor(m_dot_mat, 1, design_compres
 
 
 path = "../figures/VSV/design_n"
-viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade,layout_stage_off_design)
+viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade)
 
 
 
@@ -122,7 +124,7 @@ m_dot_mat  = np.linspace(55, 80, 100)
 layout_stage_off_mat = max_min_m_dot_VSV_compressor(m_dot_mat, 0.95, design_compressor, atm, layout_stage, blade_cascade)
 
 path = "../figures/VSV/design_n_0_9"
-viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade,layout_stage_off_design)
+viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade)
 
 
 
@@ -131,15 +133,15 @@ m_dot_mat  = np.linspace(70, 98, 100)
 
 layout_stage_off_mat = max_min_m_dot_VSV_compressor(m_dot_mat, 1.05, design_compressor, atm, layout_stage, blade_cascade)
 path = "../figures/VSV/design_n_1_05"
-viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade, layout_stage_off_design)
+viz.all_plot_VSV_stage(path,layout_stage_off_mat[0], layout_stage_off_mat[-1], blade_cascade)
 
 
 
 
-dic_operationel_different_n = {}
+
 m_dot_array = np.linspace(60, 90, 500)
 n_array = np.linspace(0.9, 1.05, 7)
 
-eff_dico_n, OPR_dico_n = eff_OPR_VSV_compressor(m_dot_array, n_array, design_compressor, atm, layout_stage, blade_cascade)
+eff_dico_n, OPR_dico_n, dic_operationel_different_n = eff_OPR_VSV_compressor(m_dot_array, n_array, design_compressor, atm, layout_stage, blade_cascade)
 viz.viz_off_design_OPR(dic_operationel_different_n, OPR_dico_n, f"../figures/VSV/OPR.pdf")
 viz.viz_off_design_eff(dic_operationel_different_n, eff_dico_n, f"../figures/VSV/eff.pdf")

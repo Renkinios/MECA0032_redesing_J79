@@ -338,4 +338,4 @@ def eff_OPR_VSV_compressor(m_dot_array, n_dot_array, design_compressor, atm, lay
         eff_dico_n[key] = eff_dico
         OPR_dico_n[key] = OPR_dico
 
-    return eff_dico_n, OPR_dico_n
+    return eff_dico_n, OPR_dico_n, dic_operationel_different_n

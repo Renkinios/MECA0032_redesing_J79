@@ -123,8 +123,7 @@ def viz_off_design_vm(layout_stage_off) :
     plt.ylabel(r"Mean velocity [m/s]")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/vm_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/vm_stage.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 def viz_off_design_T_tot(layout_stage_off) :
@@ -143,8 +142,7 @@ def viz_off_design_p_tot(layout_stage_off) :
     plt.ylabel(r"Total pressure [Pa]")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 
@@ -155,8 +153,7 @@ def viz_data_comp_off_and_on_p_tot(layout_stage_off, layout_stage) :
     plt.ylabel(r"Total pressure [Pa]")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 def viz_data_comp_off_and_on_T_tot(layout_stage_off, layout_stage) :
@@ -166,8 +163,7 @@ def viz_data_comp_off_and_on_T_tot(layout_stage_off, layout_stage) :
     plt.ylabel(r"Total temperature [K]")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/T_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/T_tot_stage.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 def viz_off_design_several_p_tot(layout_stage, layout_stage_off, layout_stage_down) :
@@ -178,8 +174,7 @@ def viz_off_design_several_p_tot(layout_stage, layout_stage_off, layout_stage_do
     plt.ylabel(r"Total pressure [Pa]")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
 
 def viz_off_design_severl_vm(layout_stage, layout_stage_off, layout_stage_down) :
     plt.plot([stage.vm for stage in layout_stage], label=r"$n_{design}$", color=color_list[0])
@@ -189,8 +184,7 @@ def viz_off_design_severl_vm(layout_stage, layout_stage_off, layout_stage_down) 
     plt.ylabel(r"$V_m [m/s]$")
     plt.xlim(0, len(layout_stage_off) - 1)
     plt.legend()
-    # plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig(f"../figures/off_design/p_tot_stage.pdf", dpi=300, bbox_inches='tight')
     plt.close()
 
 def viz_off_design_OPR(dic_operationel_different_n, OPR_dico, path):
@@ -261,7 +255,6 @@ def viz_off_design_eff(dic_operationel_different_n, eff_dico_n, path):
     ax.set_xlabel(r"Mass flow rate $\dot{m}$ [kg/s]")
     ax.set_ylabel(r"Efficiency $\eta$ [\%]")
     plt.savefig(path, dpi=300, bbox_inches='tight')
-
     plt.close()
 
 
@@ -359,15 +352,15 @@ def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, lay
 
     x_labels = np.arange(1, len(alpha_neg_stall) + 1)
 
+        # Ajouter les lignes de position de décrochage
+    plt.hlines(np.degrees(blade_cascade.stall_stator_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
+    plt.hlines(np.degrees(blade_cascade.stall_stator_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
     # Tracer les courbes
     if len(layout_stag_design) > 0:
         plt.plot(x_labels, alpha_design, label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot(x_labels, alpha_neg_stall, label=r"$\dot{m}_{min}$", color=color_list[1])
     plt.plot(x_labels, alpha_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
 
-    # Ajouter les lignes de position de décrochage
-    plt.hlines(np.degrees(blade_cascade.stall_stator_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
-    plt.hlines(np.degrees(blade_cascade.stall_stator_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
 
     # Configurer les axes
     plt.xlabel(r"Number of stator [-]")
@@ -401,16 +394,15 @@ def viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layou
     beta_pos_stall = [-np.degrees(stage.beta) for stage in layout_stage_off_pos_stall[1:len(layout_stage_off_pos_stall)-1:2]]
 
     x_labels = np.arange(1, len(beta_neg_stall) + 1)
-
+    # Ajouter les lignes de position de décrochage
+    plt.hlines(np.degrees(blade_cascade.stall_rotor_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
+    plt.hlines(np.degrees(blade_cascade.stall_rotor_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
     # Tracer les courbes
     if len(layout_stag_design) > 0:
         plt.plot(x_labels, beta_design, label=r"$\dot{m}_{design}$", color=color_list[0])
     plt.plot(x_labels, beta_neg_stall, label=r"$\dot{m}_{min}$", color=color_list[1])
     plt.plot(x_labels, beta_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
 
-    # Ajouter les lignes de position de décrochage
-    plt.hlines(np.degrees(blade_cascade.stall_rotor_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
-    plt.hlines(np.degrees(blade_cascade.stall_rotor_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
 
     # Configurer les axes
     plt.xlabel(r"Number of rotor [-]")
