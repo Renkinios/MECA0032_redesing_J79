@@ -92,6 +92,8 @@ class Compressor:
         self.number_stage = nb_stage
         self.R = degree_reaction
         self.work_coeff = work_coeff
+        self.R_tip = R_tip
+        self.R_hub = R_hub
 
         # Calculate derived parameters
         self.area_entrance = np.pi * (R_tip**2 - R_hub**2)  # Annular area (m^2)

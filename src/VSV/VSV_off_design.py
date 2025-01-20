@@ -290,3 +290,52 @@ def get_OGV_off(compressor, atm, stage_off_design, area, blade_cascade) :
 
     stage_OGV = cl.station_compressor(stage_off_design.stage_number + 1, T_stat_2, p_stat_2, T_tot, p_tot, rho2,  vm2, compressor, wu2, vu2, beta_2, alpha_2,mac)
     return stage_OGV
+def max_min_m_dot_VSV_compressor(m_dot_array_search, RPM_pourcentage, design_compressor, atm, layout_stage, blade_cascade) :
+    valid_m_dot = []
+    compressors_mat = []
+    layout_stage_off_mat = []
+
+    for m_d in m_dot_array_search:   
+        try:
+            compressor = cl.Compressor(design_compressor.solidity, design_compressor.eff_poly,  design_compressor.R_hub, design_compressor.R_tip, m_d, design_compressor.RPM * RPM_pourcentage, atm, design_compressor.number_stage, design_compressor.R, design_compressor.work_coeff)
+            layout_stage_off = VSV_get_pitching_OFF_design(compressor, atm, layout_stage, blade_cascade)
+            valid_m_dot.append(m_d)
+            compressors_mat.append(compressor)
+            layout_stage_off_mat.append(layout_stage_off)
+        except Exception as e:
+            continue
+    return layout_stage_off_mat
+
+def create_array_operating_point_diff_n(m_dot_array, n_dot_array, design_compressor, atm, layout_stage, blade_cascade) :
+    dic_operationel_different_n = {}
+    for j in n_dot_array: 
+        dic_cst_n = {'m_dot': [], 'layout_stage_off': []}
+        for m_d in (m_dot_array) :
+            try:
+                compressor       = cl.Compressor(design_compressor.solidity, design_compressor.eff_poly,  design_compressor.R_hub, design_compressor.R_tip, m_d, design_compressor.RPM*j, atm, design_compressor.number_stage, design_compressor.R, design_compressor.work_coeff)
+                layout_stage_off = VSV_get_pitching_OFF_design(compressor, atm, layout_stage, blade_cascade)
+                dic_cst_n['layout_stage_off'].append(layout_stage_off)
+                dic_cst_n['m_dot'].append(m_d)
+            except Exception as e:
+                pass
+        dic_operationel_different_n[j] = dic_cst_n
+    return dic_operationel_different_n
+
+def eff_OPR_VSV_compressor(m_dot_array, n_dot_array, design_compressor, atm, layout_stage, blade_cascade) :
+    dic_operationel_different_n = create_array_operating_point_diff_n(m_dot_array, n_dot_array, design_compressor, atm, layout_stage, blade_cascade)
+    eff_dico_n = {}
+    OPR_dico_n = {}
+    for key in dic_operationel_different_n.keys():
+        eff_dico = []
+        OPR_dico = []
+        stage_cst_n  = dic_operationel_different_n[key]['layout_stage_off']
+        for comp in dic_operationel_different_n[key]['layout_stage_off']:
+            OPR = (comp[-1].p_tot/comp[0].p_tot)
+            OPR_dico.append(OPR)
+            T_out_iso = comp[0].T_tot * OPR**((atm.gamma - 1)/atm.gamma)
+            eff_comp_iso = (T_out_iso - comp[0].T_tot)/(comp[-1].T_tot - comp[0].T_tot) *100
+            eff_dico.append(eff_comp_iso)
+        eff_dico_n[key] = eff_dico
+        OPR_dico_n[key] = OPR_dico
+
+    return eff_dico_n, OPR_dico_n

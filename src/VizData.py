@@ -366,10 +366,8 @@ def viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, lay
     plt.plot(x_labels, alpha_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
 
     # Ajouter les lignes de position de décrochage
-    plt.hlines(np.degrees(blade_cascade.stall_stator_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
-    plt.text(2, np.degrees(blade_cascade.stall_stator_neg) - 0.7, r"Stall position", color='black', fontsize=14, ha='center')
-    plt.hlines(np.degrees(blade_cascade.stall_stator_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
-    plt.text(2, np.degrees(blade_cascade.stall_stator_pos) + 0.5, r"Stall position", color='black', fontsize=14, ha='center')
+    plt.hlines(np.degrees(blade_cascade.stall_stator_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
+    plt.hlines(np.degrees(blade_cascade.stall_stator_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
 
     # Configurer les axes
     plt.xlabel(r"Number of stator [-]")
@@ -411,10 +409,8 @@ def viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layou
     plt.plot(x_labels, beta_pos_stall, label=r"$\dot{m}_{max}$", color=color_list[2])
 
     # Ajouter les lignes de position de décrochage
-    plt.hlines(np.degrees(blade_cascade.stall_rotor_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
-    plt.text(2, np.degrees(blade_cascade.stall_rotor_neg) + 0.5, r"Stall position", color='black', fontsize=14, ha='center')
-    plt.hlines(np.degrees(blade_cascade.stall_rotor_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.')
-    plt.text(2, np.degrees(blade_cascade.stall_rotor_pos) + 0.5, r"Stall position", color='black', fontsize=14, ha='center')
+    plt.hlines(np.degrees(blade_cascade.stall_rotor_neg), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3])
+    plt.hlines(np.degrees(blade_cascade.stall_rotor_pos), x_labels[0], x_labels[-1], colors='black', linestyle='-.',color = color_list[3], label = "Stall position")
 
     # Configurer les axes
     plt.xlabel(r"Number of rotor [-]")
@@ -442,3 +438,26 @@ def viz_VSV_stragger_rotor(path, layout_stage_off_neg_stall, layout_stage_off_po
     plt.legend()
     plt.savefig(f"{path}/VSV_stagger_rotor.pdf", dpi=300, bbox_inches='tight')
     plt.close()
+
+def all_plot_VSV_stage(path,layout_stage_off_neg_stall, layout_stage_off_pos_stall,blade_cascade,layout_stag_design = []):
+    viz_vm_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_mac_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_p_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_T_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_p_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_T_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_alpha_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_beta_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design)
+    viz_alpha_stator_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, blade_cascade,layout_stag_design)
+    viz_beta_rotor_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, blade_cascade,layout_stag_design)
+
+
+def all_plot_out_design_stage(path,layout_stage_off_neg_stall, layout_stage_off_pos_stall,layout_stag_design = []):
+    viz_vm_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_mac_stall_operaing_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_p_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_T_tot_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_p_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_T_stat_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_alpha_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
+    viz_beta_stall_operating_point(path, layout_stage_off_neg_stall, layout_stage_off_pos_stall, layout_stag_design)
